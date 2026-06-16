@@ -1,0 +1,33 @@
+{
+    "id": "C2475F6B",
+    "path": "~/DATA SCIENCE/STATISTICAL INFERENCE/rmarkdown_practial/my_first_rmarkdown.Rmd",
+    "project_path": "my_first_rmarkdown.Rmd",
+    "type": "r_markdown",
+    "hash": "1281146060",
+    "contents": "",
+    "dirty": false,
+    "created": 1775689020579.0,
+    "source_on_save": false,
+    "relative_order": 1,
+    "properties": {
+        "tempName": "Untitled1",
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "110,0",
+        "scrollLine": "87",
+        "rmdVisualMode": "false",
+        "rmdVisualCollapsedChunks": "",
+        "rmdVisualModeLocation": "971:1808.1483154296875",
+        "rmdVisualWrapConfigured": "true",
+        "docOutlineVisible": "0",
+        "last_setup_crc32": "8987eeb546817608"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1775850640,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1775850640870,
+    "read_only": false,
+    "read_only_alternatives": []
+}

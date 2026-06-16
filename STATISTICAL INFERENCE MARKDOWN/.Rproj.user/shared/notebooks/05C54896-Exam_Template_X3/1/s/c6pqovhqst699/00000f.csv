@@ -1,0 +1,8 @@
+"0","ggplot(contents, aes(x = BrowsingTime, y = Spend)) +"
+"0","  geom_point(color = ""blue"") +"
+"0","  geom_smooth(method = ""lm"", se = TRUE, color = ""red"") +"
+"0","  labs(title = ""Scatterplot of Browsing Time vs Spend"","
+"0","       x = ""Browsing Time (minutes)"","
+"0","       y = ""Spend (£)"") +"
+"0","  theme_minimal()"
+"0",""

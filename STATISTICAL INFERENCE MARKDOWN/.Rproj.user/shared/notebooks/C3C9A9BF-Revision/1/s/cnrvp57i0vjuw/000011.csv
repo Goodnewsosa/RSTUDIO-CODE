@@ -1,0 +1,7 @@
+"0",""
+"0","# correlation matrix to view the relationship between hp and other variables"
+"0","df <- pokemon %>%                             "
+"0","  dplyr::select(-c(pokemon, X, id, type_1, type_2, species_id, color_1, color_2, color_f, egg_group_1, egg_group_2, url_icon, generation_id, url_image))"
+"2","Error in pokemon %>% dplyr::select(-c(pokemon, X, id, type_1, type_2,  : 
+  could not find function ""%>%""
+"

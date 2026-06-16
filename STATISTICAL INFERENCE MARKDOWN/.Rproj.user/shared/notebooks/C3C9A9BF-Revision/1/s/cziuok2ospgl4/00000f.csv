@@ -1,0 +1,3 @@
+"0","#load and read the csv data file"
+"0","pokemon <- read.csv(""../data/X_mock.csv"")"
+"0",""

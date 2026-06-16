@@ -1,0 +1,23 @@
+Baseball data key
+
+Name: Player name.
+AtBat: Number of at-bats for the player.
+Hits: Number of hits the player achieved.
+HmRun: Number of home runs hit by the player.
+Runs: Number of runs scored by the player.
+RBI: Runs batted in by the player.
+Walks: Number of walks received by the player.
+Years: Number of years played in the league.
+CAtBat: Career at-bats for the player.
+CHits: Career hits for the player.
+CHmRun: Career home runs for the player.
+CRuns: Career runs scored by the player.
+CRBI: Career runs batted in by the player.
+CWalks: Career walks received by the player.
+League: League the player is in ('A' = American League, 'N' = National League).
+Division: Division in which the player's team plays.
+PutOuts: Number of putouts by the player.
+Assists: Number of assists by the player.
+Errors: Number of errors committed by the player.
+Salary: Salary of the player.
+NewLeague: League the player is assigned to after a salary raise or change ('A' = American League, 'N' = National League).

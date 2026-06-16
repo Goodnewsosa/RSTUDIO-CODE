@@ -1,0 +1,493 @@
+---
+title: 'Exam Template: Statistical Inference'
+author: "STUDENT ID"
+date: "`r Sys.Date()`"
+output:
+  word_document: default
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+# do not change these options
+knitr::opts_chunk$set(echo = TRUE) # do not edit this line.
+knitr::opts_chunk$set(error = TRUE,comment=NA) # do not edit this line.
+```
+
+```{r}
+getwd()
+
+```
+
+
+# INSTRUCTIONS
+
+Save this template as your 1356445.Rmd; you will upload this file as part of your submission. Change the author information on line 3 of this file to your **student ID**. Do not change the authorship to your name.
+
+Your should knit this file to a document **Word** format. The Word document is what will be marked! 
+
+**To conform to reproducible research principles you should submit both your .Rmd document and your Word document.**
+
+Any changes that you make to the data (e.g. variable name changes) should be made entirely within R.
+
+The subsections labelled **Answer:** indicate where you should put in your written Answers. The template also provides blank code chunks for you to complete your Answers; you may choose to add additional chunks if required.
+
+This is an individual assessment: do not work with any other person during this exam.
+
+You must submit your assignment before the stated deadline by electronic submission through Blackboard.
+
+- It is a good idea to save your work early and frequently to ensure you have no issues with the submission portal. Multiple submissions can be made to the portal, only the final one will be marked.
+
+- It is your responsibility to submit the exam in a format stipulated above. Your marks may be affected if your tutor cannot open or properly view your submission.
+
+- Do not leave submission to the very last minute. Always allow time in case of technical issues.
+
+- It is essential that you check that you have submitted the correct file(s), and that each complete file was received. Submission receipts are accessed from the Coursework tab.
+
+There is no late submission permitted on this assessment. Ensure that you submit your submission in good time. Neither the module leader nor module team can accept late assessments, do not ask them to do so.
+
+## Use of generative artificial intelligence 
+
+Appropriate use of generative artificial intelligence (AI) is permitted as a tool to assist in learning and assessment, but not to complete the assessment for you. AI responses are typically generic and poorly structured - including material that is not fully relevant to the question and approaches that are not fully justified, thus responses heavily reliant on AI often score poorly. You must demonstrate your own understanding, and that that you can add value as a data professional – this can be through the decision making process, reproducible and transparent research, cohesion of arguments, appropriate context and originality. Use the material we provide on the course, and the statistical methods we suggest on the course. Inclusion of material out of scope and inconsistencies with teaching of the course is often assessed to be poor understanding from over-reliance of AI. Ensure that you are correctly attributing any use of AI in the assessment, failure to do so can lead to referral for assessment offences.
+
+**You should use concepts and techniques introduced within the module delivery.** 
+
+
+# SCENARIO FOR EXAM
+
+## Background to the research
+
+The client is a Pokemon enthusiast, who  has little statistics knowledge! 
+
+## Data instructrions
+
+Upload the Pokemon dataset.
+
+The data is taken from a CRAN package called "pokemon"
+
+## Data structure
+
+This activity was inspired by 'tidytuesday'. See the link for full details:
+
+https://github.com/rfordatascience/tidytuesday/blob/main/data/2025/2025-04-01/readme.md
+
+You can find this and a lot more activities on 'tidytuesday' with hints and tips for analyses too!
+
+
+# QUESTIONS START HERE
+
+## Data Preparation 
+
+1. Ensure that you have prepared your submission as per Instructions.
+
+2. Prepare the data for analyses.
+
+You should explain any decisions with respect to:
+
+-any manipulation of the data structure
+
+-handling of groups with low frequency counts
+
+-unusual or missing values.
+
+Marks will be awarded for logical actions performed, and conforming to principles of reproducible research in data preparation and throughout.
+
+**(weighting 30%)**
+
+1) load your data
+2) structure
+3) summary stat
+
+4) 
+  a. boxplot to visualize any outlier found in your summary stat
+     - brief explanation of the boxplot and it's implication
+  
+  b. table and prop table to visualise the character variables 
+  
+  c. mosiac plot to visualise the character that can be viasulised(optional)
+  
+5) convert character to factors
+
+6) replace extremes with NA
+check the summary of the variable again to see if the outlier has been handled
+
+7) handle low frequency by replacing it with NA
+
+8) check total values of NA
+
+9) Filtering (in cases where there is any ethical violation)
+
+10) plot the boxplot again to see if outliers have been handled
+
+11) provide markdown explanation of the following
+-any manipulation of the data structure
+-handling of groups with low frequency counts
+
+-unusual or missing values.
+
+
+```{r eda 1}
+# Summary of numeric columns
+#summary(content[, sapply(content, is.numeric)], na.rm = TRUE)
+
+# Frequency tables
+#table(content$handed)
+#table(content$handed, content$active)
+
+# Mosaic plot
+#mosaicplot(table(content$handed, content$active))
+
+# Summary statistics by handedness
+#by(content, factor(content$handed), summary)
+
+# Proportions of handedness
+#prop.table(table(content$handed))
+
+```
+
+
+
+
+
+
+### Answer:
+```{r data}
+#load and read the csv data file
+pokemon <- read.csv("../data/X_mock.csv")
+
+```
+
+
+
+```{r structure statistics / Data structure}
+#
+str(pokemon)
+
+```
+# biggest font
+## medium font
+### smallest font
+
+- bullet point
+
+```{r Data Summary / Summary Statistics}
+#
+summary(pokemon)
+
+
+```
+# Key Insights
+
+The character variable would be converted to factor susbsequently because
+
+- Characters are text and converting to  factors tell R  that it is a group or a category
+- This matters for modelling, memory usage, and meaningful analysis.
+
+
+```{r EDA}
+
+# 
+table(pokemon$type_1)
+
+table(pokemon$type_2)
+
+table(pokemon$color_1)
+
+table(pokemon$egg_group_1)
+
+```
+
+
+```{r}
+
+# 
+prop.table(table(pokemon$type_1))
+
+```
+
+
+
+
+```{r convert }
+# convert character variable to factor 
+
+df_pokemon <- as.factor(pokemon$pokemon)
+
+# do for the rest character 
+```
+
+
+```{r}
+
+str(df_pokemon)
+```
+
+
+```{r}
+df_url_icon <- as.factor(pokemon$url_icon)
+
+```
+
+```{r}
+str(df_url_icon)
+```
+
+
+```{r}
+df_color_f <- as.factor(pokemon$color_f)
+
+```
+
+```{r}
+str(color_f)
+```
+
+## Core Research Question: Model building
+
+In Pokémon games, hp stands for Hit Points or Health Points. It represents how much damage a Pokémon can take before fainting.
+
+Create a linear regression model showing factors that can impact hp.
+
+Your answer should include:
+
+-	justification for the attempted statistical model, including any additional supporting exploratory data analyses used to make the choice;
+
+-	interpretation of the model and the validity of model assumptions.
+
+Your answer should be in the form of a concise report, suitable for the client. Maximum number of words: 500
+
+**(weighting 35%)**
+
+### Answer: 
+
+# Introduction
+
+ - A brief introduction to the purpose and scope of the report. Clearly state the research questions or objectives that the analysis aims to address.
+
+
+# Data Description
+
+A section that provides an overview of the data used in the analysis. Describe the data source, sample size, and any important characteristics of the dataset.
+
+# Methodology
+Explanation of the statistical methods and techniques used in the analysis. Include information about data preprocessing, any statistical tests, models, or algorithms employed.
+### Justification of attempted statistical modelling
+
+
+
+# Key Finding
+
+Present the main results of the analysis. Use clear and concise language, and consider using tables, charts, or graphs to illustrate key findings. Highlight any statistically significant findings or patterns.
+
+# Discussion and Interpretation
+
+Interpret the findings and explain their implications. Provide context and insights based on the analysis. Discuss any limitations or potential sources of bias in the analysis.
+
+# Limitations
+
+Limitations of the studey design and analyses. Issues with the assumptions and data modelling techniques used. What variables are not recorded that may also have been helpful. How the research could be improved.
+
+# Conclusion
+
+Summarize the main takeaways and emphasize the significance of the analysis. Reiterate any key points or findings. If further analysis or actions are needed, suggest potential next steps or areas for further investigation.
+-References: If external sources were used, provide citations in UWE Harvard format.
+
+```{r viz}
+
+# visualise the spread of pokemon
+hist(pokemon$hp)
+
+```
+# Key insight 
+
+```{r correlation matrix}
+
+# correlation matrix to view the relationship between hp and other variables
+df <- pokemon %>%                             
+  dplyr::select(-c(pokemon, X, id, type_1, type_2, species_id, color_1, color_2, color_f, egg_group_1, egg_group_2, url_icon, generation_id, url_image))
+
+str(df)
+```
+
+
+```{r corr}
+
+corr <- cor(df)
+
+
+```
+
+```{r}
+library(corrplot)
+
+corrplot(corr, method="number")
+
+```
+## 1. Justify the Model Type (Linear Regression)
+
+"Linear regression was chosen because HP is a continuous numeric outcome variable, making it suitable for linear regression. Alternative models such as logistic regression were inappropriate as HP is not binary."
+
+
+## 2. Justify the Predictors (Using your EDA)
+
+"A correlation matrix was produced to identify variables with a meaningful linear relationship with HP. Base experience showed the strongest correlation (r = 0.63), followed by height (r = 0.45), weight (r = 0.44), and attack (r = 0.43). Defense (r = 0.26) and speed (r = 0.14) were excluded due to negligible correlations with HP."
+
+Your corrplot is the evidence — include it in your report as a figure.
+
+## 3. Justify Assumptions (Using diagnostic plots)
+After running plot(model), you say:
+
+"Model assumptions were assessed using diagnostic plots. The Residuals vs Fitted plot confirmed approximate linearity, the Q-Q plot suggested residuals were roughly normally distributed, and the Scale-Location plot was examined for homoscedasticity.
+
+
+```{r}
+# visualise to confirm the movement and the linearity of the variable
+
+# base_experience vs hp
+ggplot(df, aes(x = base_experience, y = hp)) + geom_point() +
+  labs(
+    x = "Base Experience",
+    y = "HP",
+    title = "Base Experience vs HP"
+  ) +
+  geom_smooth(method = "lm")+
+  theme_minimal()
+
+```
+
+
+```{r regression modelling}
+
+# Build the model
+model <- lm(hp ~ base_experience + height + weight + attack + special_attack + special_defense, data = df)
+
+# View the results
+summary(model)
+
+```
+ The independent variables(list them)  explainsb 45% of variation in Hp
+ 
+ `hp` = beta_0 + beta_1 * `base_experience` + beta_2 * `height` + beta_3 * `weight` - beta_4 * `attack`- beta_5 * `special_attack` - beta_7 * `special_defense`
+ 
+ 
+```{r aic}
+
+# OPTIONAL 
+# BUT IT IS BETTER TO DO THE OPTION ONE AND PROBABLY USE AIC TO CONFIRM YOUR MODEL
+
+model <- stepAIC(model)
+summary(model)
+
+```
+```{r}
+library(performance)
+
+check_model(model)
+```
+
+
+## Your Research Question: Bivariate analysis
+
+
+Clearly state a **new** research question based on the data set supplied, not answered in your analyses above. You should consider a research question that will **make use of exactly two of the variables** from the available data. 
+
+State and action a statistical analyses plan.
+
+It may be appropriate to include the following: exploratory data analyses; hypothesis testing; interpretation; discussion of limitations.
+
+Your answer should be in the form of a concise report, suitable for the client. Maximum number of words: 500
+
+
+**(weighting 35%)**
+
+### Answer:
+
+# STATISTICAL DATA ANALYSIS PLAN
+
+A Data Analysis Plan (often referred to as a Statistical Data Analysis Plan) is a crucial document that outlines the strategy for analysing data in a research study. It is developed before any data analysis begins and serves as a roadmap to guide the process. A comprehensive analysis plan typically includes the following components:
+
+## Research Question(s) and Hypotheses
+
+Clearly state the purpose of the analysis, including any specific research questions or hypotheses you intend to test.
+
+Is there a significant difference in mean HP between Pokémon with a Water type and Fire type?
+
+$H_0: \mu_S = \mu_V$
+
+where $\mu_S$ denotes the Population mean value for setos, and $\mu_V$ denotes the Population mean value for versicolor.
+(tailor it to your variables)
+##	Dataset(s) to be Used: 
+Identify the datasets that will be analysed, including any relevant details such as the source of the data and its structure.
+
+##Inclusion/Exclusion Criteria:
+Define the criteria for including or excluding data in the analysis. This might involve selecting a specific subset of the data based on certain characteristics.
+
+##	Variables for Main Analysis:
+List the variables that will be the focus of the main analysis. These are the key data points that will be used to answer the research questions.
+
+##	Plan for Missing Data:
+Outline how missing data will be handled. This might include strategies for imputation, exclusion, or sensitivity analysis.
+
+##	Key Tables and Summary Statistics:
+Describe the tables and summary statistics that will be generated, including univariable (single variable) and bivariable (two variables) analyses and grouping variables.
+
+##	Suitable Graphs: 
+Specify the types of graphs and visualisations that will be used to present the data.
+
+##	Statistical Methods and Software:
+Detail the statistical methods that will be applied and the software tools used to perform the analysis.
+Creating a data analysis plan is essential for several reasons:
+
+
+
+
+
+
+```{r EDA two sample}
+# Filter out water and fire
+Filtered_pokemon <- subset(pokemon, type_1 == "water" | type_1 == "fire")
+
+
+```
+
+
+```{r}
+# Summary of HP for Water type
+
+summary(Filtered_pokemon$hp[Filtered_pokemon$type_1 == "water"])
+
+
+# Summary of HP for Fire type
+summary(Filtered_pokemon$hp[Filtered_pokemon$type_1 == "fire"])
+
+```
+
+```{r}
+boxplot(Filtered_pokemon$hp ~ Filtered_pokemon$type_1)
+```
+
+```{r}
+t.test(Filtered_pokemon$hp ~ Filtered_pokemon$type_1, var.equal = TRUE)
+```
+
+
+
+What does the EDA say about the null hypothesis?
+
+
+
+### Assumptions
+
+- No gross outliers: no extreme points visible beyond the whiskers in the boxplot
+- Observations independent:  each Pokémon appears once in the dataset, satisfied by design
+- Sample large enough: both Water and Fire groups exceed 30 observations, so water and fire  could be Normally distributed by the Central Limit Theorem
+
+- Equal variance: both boxplots show approximately similar spread, suggesting equal variance assumption is met
+
+# End matter - Session Information
+
+Do not edit this part. Make sure that you compile your document so that the information about your session (including software / package versions) is included in your submission.
+
+```{r}
+sessionInfo()
+```

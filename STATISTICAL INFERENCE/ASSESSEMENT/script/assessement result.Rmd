@@ -1,0 +1,46 @@
+---
+title: "Assessement Test"
+author: "Iyenoma Goodnews Osabuohien 26001003"
+date: "2026-02-23"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+contents <- read.csv("../data/contents.csv")
+```
+
+
+
+```{r}
+
+# Pearson correlation coefficient
+cor(contents$X, contents$Y, method = "pearson")
+
+
+```
+```{r}
+cor.test(contents$X, contents$Y)
+
+```
+```{r}
+plot(contents$X, contents$Y,
+     xlab = "X",
+     ylab = "Y",
+     main = "Scatter plot of X vs Y")
+
+```
+
+## R Markdown
+
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+

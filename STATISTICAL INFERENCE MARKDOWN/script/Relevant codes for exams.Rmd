@@ -1,0 +1,154 @@
+---
+title: "Relevant Codes for Exams"
+author: "Dinka"
+date: "2026-04-20"
+output: html_document
+
+# do not change this option, this shows the code in your knitted document
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE) 
+```
+
+# installing librabraries and packages 
+``` {r}
+if(!require()){install.packages("")} ## to check if package is required 
+
+install.packages() ## installing a package, this can also be done using the tools in the status bar
+library() ## checking if it is already installed 
+
+```
+
+# loading in data 
+```{r}
+content <- read.csv("file path")
+
+```
+
+
+``` {r str}
+# data structure and variables
+str() ## shows the structure of the data and variable types 
+names() ## shows the columns of  a data frame
+head() ## first few rows of a df 
+
+## summary statistics 
+``` {r}
+summary() ## quick statistical overview, quartiles,mean median and mode
+mean(mtcars$mpg) ## mean of a particular vector/ colunm '$' is the operator
+round(mean(mtcars$mpg),2) ## rounding the mean to 2 decimal places 
+
+```
+ here , key insights or results of the summary will be outlined 
+ 
+```{r eda 1}
+ #Exploratory Data Analysis
+ # Summary of numeric columns
+summary(content[, sapply(content, is.numeric)], na.rm = TRUE)
+
+# Frequency tables
+table(content$handed)
+
+table(content$handed, content$active)
+
+# Mosaic plot
+mosaicplot(table(content$handed, content$active))
+
+# Summary statistics by handedness
+by(content, factor(content$handed), summary)
+
+# Proportions of handedness
+prop.table(table(content$handed))
+```
+ outline key insights here 
+ 
+```{r eda 2}
+# visualization/ graphical summary 
+## boxplots
+ggplot(mtcars, aes(x = "", y = mpg)) +
+  geom_boxplot(fill = "skyblue", color = "blue") +
+  labs(title = "Boxplot of MPG from mtcars Dataset",
+       y = "Miles per Gallon (mpg)") +
+  theme_minimal()
+```
+ key insights here   
+  
+    
+ ##  In this code:
+
+- ggplot(mtcars, aes(x = "", y = mpg)): This sets up the basic ggplot object, specifying the dataset (mtcars) and aesthetics (mapping the empty string "" to the x-axis and the 'mpg' variable to the y-axis).
+
+- geom_boxplot(fill = "skyblue", color = "blue"): This adds the boxplot layer to the ggplot object, specifying the fill and border color.
+
+- labs(title = "Boxplot of MPG from mtcars Dataset", y = "Miles per Gallon (mpg)"): This sets the plot title and y-axis label.
+
+- theme_minimal(): This applies a minimal theme to the plot for better aesthetics.
+
+
+```{r eda 3}
+## histogram
+ggplot(mtcars,aes(mpg))+geom_histogram(binwidth = 4)+xlab("Miles per Gallon")+ylab("Number of Cars")+ggtitle("Distribution of Cars by Mileage")
+
+##Editing this to show the histogram for the number of cylinders (edit the binwidth to be equal to 1).
+ggplot(mtcars,aes(cyl))+geom_histogram(binwidth = 1)+xlab("Cylinders")+ylab("Number of Cars")+ggtitle("Distribution of Cars by Cylinders")
+```
+
+
+
+```{r data cleaning}
+
+
+# Replace "unknown" with NA in 'handed'
+content$handed[content$handed == 'unknown'] <- NA
+
+# Replace extreme weight values with NA
+content$weight[content$weight > 250] <- NA
+
+# Count of non-missing weight values
+length(na.omit(content$weight))
+
+# Aggregated height statistics by handedness and activity
+agg<- aggregate(
+  height ~ handed + active,
+  data = content,
+  FUN = function(x) c(mean = mean(x), sd = sd(x))
+)
+```
+here , key insights or results of the summary will be outlined 
+
+```{r}
+# correlation(between two variables)
+with(cars, cor(speed,dist)) ## gives only the number(pearson's coefficient)
+with(cars, cor.test(speed,dist)) ## gives other info like p-value, confidence interval etc.
+
+```
+
+```{r}
+## linear regression(the dependent and independent variable needs to be identified )
+model1 <- lm(dist ~ speed, data=cars)
+summary(model1)
+
+```
+here you will Interpret the output of the model using the formula .
+$$\mbox{distance} = \beta_0 + \beta_1 \times \mbox{speed}$$
+
+```{r}
+# this code removes am, vs, cyl, gear, carb
+
+library(dplyr)
+df <- mtcars %>%
+select(-c(am, vs, cyl, gear, carb))
+glimpse(df)
+
+```
+## Model fit
+
+Assess the performance of the model.
+```{r}
+
+library(performance)
+check_model(model1)
+
+```
+
+
+

@@ -1,0 +1,580 @@
+---
+title: 'Exam Template: Statistical Inference'
+author: "26001003"
+date: "`r Sys.Date()`"
+output:
+  word_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+# do not change these options
+knitr::opts_chunk$set(echo = TRUE) # do not edit this line.
+knitr::opts_chunk$set(error = TRUE,comment=NA) # do not edit this line.
+```
+
+# INSTRUCTIONS
+
+Save this template as your studentID.Rmd; you will upload this file as part of your submission. Change the author information on line 3 of this file to your **student ID**. Do not change the authorship to your name.
+
+Your should knit this file to a document **Word** format. The Word document is what will be marked!
+
+**To conform to reproducible research principles you should submit both your .Rmd document and your Word document.**
+
+Any changes that you make to the data (e.g. variable name changes) should be made entirely within R.
+
+The subsections labelled **Answer:** indicate where you should put in your written Answers. The template also provides blank code chunks for you to complete your Answers; you may choose to add additional chunks if required.
+
+This is an individual assessment: do not work with any other person during this exam.
+
+You must submit your assignment before the stated deadline by electronic submission through Blackboard.
+
+- It is a good idea to save your work early and frequently to ensure you have no issues with the submission portal. Multiple submissions can be made to the portal, only the final one will be marked.
+
+- It is your responsibility to submit the exam in a format stipulated above. Your marks may be affected if your tutor cannot open or properly view your submission.
+
+- Do not leave submission to the very last minute. Always allow time in case of technical issues.
+
+- It is essential that you check that you have submitted the correct file(s), and that each complete file was received. Submission receipts are accessed from the Coursework tab.
+
+There is no late submission permitted on this assessment. Ensure that you submit your submission in good time. Neither the module leader nor module team can accept late assessments, do not ask them to do so.
+
+## Use of generative artificial intelligence 
+
+Appropriate use of generative artificial intelligence (AI) is permitted as a tool to assist in learning and assessment, but not to complete the assessment for you. AI responses are typically generic and poorly structured - including material that is not fully relevant to the question and approaches that are not fully justified, thus responses heavily reliant on AI often score poorly. You must demonstrate your own understanding, and that that you can add value as a data professional – this can be through the decision making process, reproducible and transparent research, cohesion of arguments, appropriate context and originality. Use the material we provide on the course, and the statistical methods we suggest on the course. Inclusion of material out of scope and inconsistencies with teaching of the course is often assessed to be poor understanding from over-reliance of AI. Ensure that you are correctly attributing any use of AI in the assessment, failure to do so can lead to referral for assessment offences.
+
+**You should use concepts and techniques introduced within the module delivery.** 
+
+
+# SCENARIO FOR EXAM
+
+## Background to the research
+
+Management of an online store are interested in monitoring what impacts how much customers are willing to spend, and whether customers would recommend the store to a friend.
+
+## Data instructions
+
+Your individual data set is accessed via Blackboard >>> Assessments >>> Dewis Data For Exam.
+
+You must only analyse the specified data. No other data is to be used for this assessment.
+
+All data manipulation and analyses must be done within R.
+
+## Data structure
+
+A sample of customer sales is given to you in the data file. The following variables are available:
+
+online - If purchase was made online
+
+recommend - If customer stated they would recommend the online store to a friend
+
+gender - customer gender
+
+age - customer age Note: Customers must be 18 or over to use the online service, any other age entered is assumed to be an error
+
+LOS - Length of time customer has held an online account (years)
+
+voucher - the number of discount codes applied at checkout
+
+BrowsingTime - time spent browsing the online store (in minutes)
+
+CheckoutTime - time spent at the checkout (in minutes)
+
+Rating - a rating given by the customer at checkout for the service, from 1=poor to 5=excellent
+
+DeliveryTime - estimated delivery time at time of order (days)
+
+Spend - total price paid for the order in GBP (Pound Sterling)
+
+
+# QUESTIONS START HERE
+
+## Data Preparation 
+
+1. Ensure that you have prepared your submission as per Instructions.
+
+2. Prepare the data for analyses.
+
+You should explain any decisions with respect to:
+
+-any manipulation of the data structure
+
+-handling of groups with low frequency counts
+
+-unusual or missing values.
+
+Marks will be awarded for logical actions performed, and conforming to principles of reproducible research in data preparation and throughout. 
+
+**(weighting 30%)**
+
+
+### Answer:
+```{r data}
+# load and read the csv data file
+contents <- read.csv("../data/contents.csv")
+
+```
+
+## Explanation
+- I load the dataset into R using read.csv(). 
+
+```{r}
+# structure statistics / Data structure
+str(contents)
+```
+## Explanation
+
+- my dataset shows that the dataset contains 121 observations and 11 variables. Three variables (online, recommend, gender) are stored as character strings, 5 numeric and 3 integer variables.
+
+
+```{r}
+# Data Summary / Summary Statistics
+summary(contents)
+
+```
+## Interpretation of Summary Statistics 
+
+## Categorical variables
+ - online, recommend, and gender are stored as character variables.
+ - Their summaries show only lengths, confirming they need to be converted to factors.
+ 
+## Age
+ - Min = 6, Max = 55, Median = 27, Mean = 27.64
+ - The minimum value of 6 is invalid because customers must be 18 or older.
+ - The rest of the age distribution (23–30 for the middle 50%) appears realistic.
+ 
+## Length of Online Service (LOS)
+ - Ranges from 0.08 to 8.92 years.
+ - Median LOS is 2.33 years, suggesting most customers have moderate experience.
+ - No unusual values.
+ 
+## Voucher Use
+ - Values range from 0 to 1.
+ - Median = 1, Mean = 0.79,  most customers used a voucher.
+ 
+## CheckoutTime
+  - Ranges from 1.9 to 8.6 minutes, with 9 missing values.
+  - All values are plausible.
+  
+## BrowsingTime
+  - Ranges from 5.4 to 15.1 minutes, with 4 missing values.
+  - Values appear reasonable.
+  
+## Rating
+  - Ranges from 1.5 to 4.6, with 48 missing values.
+  - Ratings fall within the expected 1–5 scale.
+  
+## DeliveryTime
+  - Ranges from 5 to 16 days, with no missing values.
+  - Values are realistic for delivery estimates.
+  
+## Spend
+  - Ranges from £10.42 to £50.91, with a median of £32.82.
+  - No extreme or implausible values.
+ 
+```{r}
+# Boxplots for numeric variables
+boxplot(contents$age, main = "Boxplot of Age", ylab = "Age")
+boxplot(contents$Spend, main = "Boxplot of Spend", ylab = "Spend (£)")
+boxplot(contents$BrowsingTime, main = "Boxplot of Browsing Time", ylab = "Minutes")
+
+```
+
+## Explanation
+- The age boxplot clearly shows the invalid age value (6). Other numeric variables show no extreme or implausible outliers, confirming that only the age variable requires correction.
+
+```{r}
+# Tables + proportions for categorical variables
+
+table(contents$online)
+prop.table(table(contents$online))
+
+table(contents$recommend)
+prop.table(table(contents$recommend))
+
+table(contents$gender)
+prop.table(table(contents$gender))
+
+```
+# Explanation
+
+- When I looked at the categorical variables, a few things stood out.
+All customers in the dataset made their purchase online, which makes sense given the focus of the study. The recommendation variable is almost evenly split, with roughly half of the customers saying they would recommend the store and half saying they wouldn’t. This gives a nice balance for later analysis.
+
+- For gender, most customers identified as either Female or Male, but there was one “Genderqueer” entry. Since this category only appears once, it’s too small to analyse properly and could cause issues later on. Because of that, it makes sense to treat it as a low‑frequency group and set it to NA during cleaning.
+
+
+```{r}
+# Mosaic plot.
+mosaicplot(table(contents$gender, contents$recommend),
+           main = "Gender vs Recommend",
+           xlab = "Gender", ylab = "Recommend")
+
+```
+
+# Explanation
+
+- The mosaic plot gives a quick visual sense of how gender relates to whether customers would recommend the store. The Female and Male groups take up most of the space, which matches the fact that almost all customers fall into these two categories. 
+- Within both groups, the “Yes” and “No” sections are fairly similar in size, showing that recommendation behaviour is quite balanced for both genders. The Genderqueer group appears as a very thin strip because there is only one person in that category, so it doesn’t provide any meaningful pattern. Overall, the plot suggests that gender doesn’t show a strong difference in recommendation behaviour in this dataset.
+
+
+```{r}
+#Converting character variables to factors
+
+contents$online     <- as.factor(contents$online)
+contents$recommend  <- as.factor(contents$recommend)
+contents$gender     <- as.factor(contents$gender)
+
+```
+
+```{r}
+
+str(contents)
+```
+
+# Explanations
+
+- After converting the character variables to factors, the structure of the dataset now shows the correct data types for each variable. The three categorical variables;  online, recommend, and gender are now stored as factors, which is how they should be treated in analysis. The online variable has only one level (“Yes”), which simply reflects that all purchases in this dataset were made online. The recommend variable has two levels (“No” and “Yes”), and gender has three levels, although one of them (“Genderqueer”) appears only once.
+
+- All other variables, such as age, LOS, voucher use, browsing time, checkout time, rating, delivery time, and spend, remain numeric. These are already in the right format for summaries, visualisation, and modelling. Overall, the dataset is now structured properly, with categorical variables recognised as factors and numeric variables left unchanged.
+
+
+```{r}
+# Replace invalid ages (<18) with NA
+contents$age[contents$age < 18] <- NA
+
+# Re-check summary
+summary(contents$age)
+
+```
+
+# Explanations
+
+- After removing the invalid age value, the age distribution now looks much more realistic. The youngest customer is 19, which fits the rule that users must be at least 18. Most customers fall between their early twenties and early thirties, with a median age of 27. The average age is about 28, and the oldest customer is 55. Only one value is now missing, which is the invalid age we replaced with NA. Overall, the age variable is now clean and ready for analysis.
+
+```{r}
+# Handling the low-frequency gender category which is Genderqueer
+contents$gender[contents$gender == "Genderqueer"] <- NA
+
+# Re-check summary
+
+summary(contents$gender)
+
+```
+
+# Explaination
+
+- After removing the low‑frequency “Genderqueer” category, the gender distribution now looks much cleaner. There are 69 Female customers and 51 Male customers, which makes up the entire usable sample. The single “Genderqueer” entry has been set to NA, so it now appears as one missing value. This avoids having a category with only one person, which would not be useful for analysis and could cause unstable results. Overall, the gender variable is now in a better shape for any statistical work that follows.
+
+```{r}
+# Count missing values in the dataset
+sum(is.na(contents))
+colSums(is.na(contents))
+
+```
+# Explaination
+
+- After checking for missing values, the dataset has 63 missing entries in total. Most variables have no missing data at all, but a few stand out. The Rating variable has the largest number of missing values (48), which means many customers didn’t leave a rating at checkout. CheckoutTime has 9 missing values, and BrowsingTime has 4 missing values. There is also one missing value in gender and one in age, both of which came from cleaning steps earlier. All other variables are complete. Overall, the missingness is concentrated in a few variables, and the rest of the dataset is fully intact.
+
+```{r}
+# Re‑plotting  boxplot after cleaning the dataset
+boxplot(contents$age, main = "Boxplot of Age After Cleaning", ylab = "Age")
+
+```
+
+# Explaination.
+- After cleaning the age variable, the new boxplot shows a much more realistic distribution. The minimum age is now 19, which fits the rule that customers must be adults. Most ages fall between the early twenties and early thirties, with the median sitting at 27. The plot also shows a few older customers in their forties and fifties, which appear as points above the main range. These aren’t errors they’re just natural variation in the customer base. Overall, the boxplot confirms that the age data is now sensible and ready for analysis.
+
+# Overall Key Insight in Data Preparation.
+- After going through all the preparation steps, the dataset is now in a much better condition for analysis. 
+- The categorical variables have been properly converted to factors, the incorrect age value has been removed, and the single low‑frequency gender entry has been handled. 
+- Most variables are complete, with missing values mainly appearing in Rating, CheckoutTime, and BrowsingTime. The age distribution now looks realistic, and the gender variable is cleaner and more reliable. 
+- Overall, the dataset is tidy, consistent, and ready to move on to the analysis stage.
+
+
+## Core Research Question: Model building
+
+Create a linear regression model showing factors that can impact total customer spend at the online store.
+
+Your answer should include:
+
+-	justification for the attempted statistical model, including any additional supporting exploratory data analyses used to make the choice;
+
+-	interpretation of the model and the validity of model assumptions.
+
+Your answer should be in the form of a concise report, suitable for the client. Maximum number of words: 500
+
+**(weighting 35%)**
+
+### Answer: 
+
+## Introduction
+- The aim of this analysis is to identify which customer characteristics are associated with differences in spending in an online retail environment. By modelling Spend as the outcome and including a range of demographic, behavioural, and service‑related predictors, the goal is to understand which factors meaningfully influence how much customers spend. These insights can support decisions aimed at improving customer engagement and optimising the online shopping experience.
+
+## Data Description
+- The dataset contains 121 customer records with variables describing demographics (age, gender), behavioural measures (browsing time, checkout time, voucher use), service‑related factors (delivery time, rating), and recommendation behaviour. After cleaning, categorical variables were converted to factors, invalid ages were corrected, and low‑frequency categories were handled appropriately. Missing values were retained and later handled through complete‑case analysis during model fitting.
+
+## Methodology
+- A multiple linear regression model was fitted using Spend as the dependent variable. The predictors included age, LOS, CheckoutTime, BrowsingTime, Rating, and DeliveryTime. This modelling approach allows the effect of each predictor to be assessed while holding the others constant. The model was estimated using complete cases, ensuring that the analysis remained reproducible and transparent.
+
+## Justification for the Model
+
+## Multiple linear regression is appropriate because:
+
+- Spend is a continuous outcome.
+
+- The predictors are a mix of continuous and categorical variables.
+
+- The goal is to isolate the unique contribution of each factor while controlling for others.
+
+## Exploratory analysis supported this choice:
+
+- Spend showed a reasonably continuous distribution.
+
+- Correlation analysis indicated strong relationships between Spend and key behavioural variables (BrowsingTime, DeliveryTime).
+
+- No severe multicollinearity was detected among predictors.
+This justified the use of a linear model to quantify the strength and direction of these relationships.
+
+## Exploratory Data Analysis
+
+```{r EDA}
+# Visualise the amount spending  by all customers
+library(ggplot2)
+
+ggplot(contents, aes(x = "", y = Spend)) +
+  geom_boxplot(fill = "skyblue", color = "blue", na.rm = TRUE) +
+  labs(
+    title = "Boxplot of Spend",
+    y = "Spend", x = "") +
+  theme_minimal()
+```
+
+## key insight
+- The boxplot shows that most customers spend within a fairly compact range, with a few higher‑spending customers appearing as mild outliers. The median spend sits near the centre of the box, suggesting a reasonably balanced distribution. Overall, the plot indicates that spending behaviour is fairly consistent across customers, with only a small number spending noticeably more than the rest.
+
+
+```{r}
+
+  ggplot(contents, aes(x = Spend)) +
+  geom_histogram(bins = 20, fill = "green", color = "darkgreen", na.rm = TRUE) +
+  labs(title = "Histogram of Spend", x = "Spend", y = "Frequency") +
+  theme_minimal()
+```
+
+## key insight
+
+- The histogram shows that Spend is slightly right‑skewed, with most customers spending in the lower to mid range. A smaller number of customers fall into the higher‑spending categories. This pattern is typical in retail settings, where a few customers tend to make larger purchases.
+
+
+
+```{r correlation matrix}
+# continuous variables from the dataset
+library(dplyr)
+num_contents  <- contents %>%
+  dplyr::select(-c(age, LOS, CheckoutTime, BrowsingTime, Rating, DeliveryTime, Spend))
+
+str(contents)
+```
+
+## key insight the Correlation Matrix Preparation
+- Before producing the correlation matrix, the dataset was restricted to include only continuous variables. Categorical variables such as online, recommend, gender, and voucher were removed because correlation analysis requires numeric inputs. After this selection, the dataset contained seven continuous variables: age, LOS, CheckoutTime, BrowsingTime, Rating, DeliveryTime, and Spend.
+
+- The str() output confirms that all remaining variables are numeric (either integer or double), which makes them suitable for computing pairwise correlations. This cleaned subset ensures that the correlation matrix accurately reflects the linear relationships between the continuous predictors and the response variable.
+
+
+```{r corr}
+# only numeric variables
+numeric_contents <- contents[, sapply(contents, is.numeric)]
+
+# correlation matrix
+corr <- cor(numeric_contents, use = "complete.obs")
+
+# Plot correlation matrix
+library(corrplot)
+corrplot(corr, method = "number")
+
+
+```
+
+## key insight Explanation of the Correlation Matrix plot
+
+- The correlation matrix shows that BrowsingTime and DeliveryTime are the two variables most strongly related to Spend. BrowsingTime has a strong positive correlation with Spend, meaning customers who browse longer tend to spend more. DeliveryTime has a strong negative correlation with Spend, indicating that longer delivery times are associated with lower spending. Other variables such as Rating, age, LOS, voucher use, and CheckoutTime show only weak or negligible correlations with Spend, suggesting they play a much smaller role in influencing customer spending.
+
+
+## Regression Model
+  
+```{r Regression Model}
+#Running the model
+
+model <- lm(Spend ~ age + LOS + CheckoutTime + BrowsingTime +
+              Rating + DeliveryTime,
+            data = contents)
+
+summary(model)
+
+```
+## Key Insight From the Model Results
+
+## The model shows that three variables meaningfully predict customer spending: LOS, BrowsingTime, and DeliveryTime.
+
+- BrowsingTime is by far the strongest predictor. Customers who browse longer spend significantly more.
+
+- LOS also has a positive effect: customers who stay longer tend to spend slightly more.
+
+- DeliveryTime has a strong negative effect: longer delivery times are associated with lower spending.
+
+- All other variables  age, CheckoutTime, and Rating — are not statistically significant, meaning they do not meaningfully influence spending once the other factors are considered.
+
+The model fits extremely well, with an Adjusted R2 of 0.8777, meaning it explains about 88% of the variation in Spend. The overall F‑test is highly significant, confirming the model is strong and reliable.
+
+
+```{r Model Diagnostics }
+#Model Diagnostics
+
+library(performance)
+
+check_model(model)
+
+```
+
+## Key Insight from Model Diagnostics
+
+- The diagnostic plots confirm that the regression model meets the main assumptions of linear regression quite well:
+
+- Posterior Predictive Check: The model’s predicted values closely match the observed data, showing good overall fit.
+
+- Linearity: The residuals are evenly scattered around the horizontal line, indicating that the relationship between predictors and Spend is approximately linear.
+
+- Homogeneity of Variance: The spread of residuals is consistent across fitted values, suggesting no major heteroscedasticity problem.
+
+- Influential Observations: Most points lie within the contour lines, meaning no extreme outliers or overly influential cases.
+
+- Collinearity: All Variance Inflation Factors (VIFs) are below 5, confirming low multicollinearity among predictors.
+
+- Normality of Residuals: The residuals follow the reference line closely, supporting the assumption of normality.
+
+
+## Discussion
+
+- The model shows that customer spending is mainly driven by behavioural and service‑related factors rather than demographics. BrowsingTime is the strongest predictor, indicating that customers who engage more deeply with the website tend to spend significantly more. DeliveryTime has a clear negative effect, suggesting that slower delivery discourages higher spending. LOS also contributes positively, though to a smaller extent. Other variables such as age, CheckoutTime, and Rating do not meaningfully influence spending once the key predictors are included. The diagnostic checks confirm that the model assumptions are met, meaning the results are reliable and the relationships identified are statistically sound.
+
+## Conclusion 
+
+- Customer spending is strongly influenced by browsing behaviour, delivery speed, and time spent on the site. Longer browsing and longer stays increase spending, while longer delivery times reduce it. The model fits well and provides a reliable explanation of spending patterns.
+
+
+
+## Your Research Question: Bivariate analysis
+
+Clearly state a **new** research question based on the data set supplied, not answered in your analyses above. You should consider a research question that will **make use of exactly two of the variables** from the available data. 
+
+State and action a statistical analyses plan.
+
+It may be appropriate to include the following: exploratory data analyses; hypothesis testing; interpretation; discussion of limitations.
+
+Your answer should be in the form of a concise report, suitable for the client. Maximum number of words: 500
+
+
+**(weighting 35%)**
+
+### Answer:
+
+## Introduction
+
+- This analysis investigates whether there is a meaningful relationship between the amount of time customers spend browsing the online store and the total amount they spend. BrowsingTime and Spend were selected because exploratory analysis and the earlier correlation matrix indicated a strong association between these two continuous variables. Understanding this relationship can help the business evaluate whether increased customer engagement translates into higher revenue.
+
+## Exploratory Data Analysis
+
+## A scatterplot that produced to visualise the relationship between BrowsingTime and Spend:
+
+```{r your}
+ggplot(contents, aes(x = BrowsingTime, y = Spend)) +
+  geom_point(color = "blue") +
+  geom_smooth(method = "lm", se = TRUE, color = "red") +
+  labs(title = "Scatterplot of Browsing Time vs Spend",
+       x = "Browsing Time (minutes)",
+       y = "Spend (£)") +
+  theme_minimal()
+
+```
+
+## A small number of rows were automatically removed from the scatterplot and regression line because BrowsingTime contained four missing values. ggplot excludes these non‑finite values by default. 
+
+## key insight
+
+- The scatterplot shows a clear upward trend between browsing time and spending. As customers spend more minutes browsing the store, their spending generally increases as well. The points sit fairly close to the red regression line, which suggests the relationship is strong and consistent rather than random. There are no unusual outliers pulling the pattern in either direction, and the confidence band stays narrow across the range. Overall, the plot gives a very clear message: customers who browse longer tend to spend more
+
+## Statistical Analysis Plan
+
+## Because both variables are continuous and appear linearly related, the following analyses were conducted:
+
+- Pearson correlation to measure the strength and direction of the linear relationship.
+
+- Simple linear regression to quantify how much Spend changes for each additional minute of browsing.
+
+- Hypothesis testing on the regression slope to determine whether the relationship is statistically significant.
+
+## Hypotheses
+
+- Null hypothesis (H₀): There is no linear relationship between BrowsingTime and Spend (β₁ = 0).
+
+- Alternative hypothesis (H₁): There is a positive linear relationship between BrowsingTime and Spend (β₁ > 0).
+
+## Correlation
+
+```{r}
+cor.test(contents$BrowsingTime, contents$Spend)
+
+```
+
+## Key Insight from the Correlation Result
+
+- The correlation between BrowsingTime and Spend is very strong and positive. The correlation coefficient is 0.85, which means that customers who browse longer almost always tend to spend more. The p‑value is extremely small, so this relationship is statistically significant and not due to chance. The confidence interval is also tight and entirely positive, reinforcing how consistently strong this relationship is across the sample.
+
+
+```{r}
+# Simple Linear Regression
+model_bi <- lm(Spend ~ BrowsingTime, data = contents)
+summary(model_bi)
+
+
+```
+
+## Key Insight from the Simple Linear Regression
+
+- The regression results show a very strong and meaningful relationship between browsing time and spending. The slope for BrowsingTime is 3.44, which means that for every extra minute a customer spends browsing, their spending increases by about £3.44 on average. This effect is highly significant, with a p‑value far below 0.001, so it’s extremely unlikely to be due to chance.
+
+- The model explains a large amount of the variation in spending (R2 ≈ 0.73), which tells us that browsing time alone accounts for around 73% of the differences in how much customers spend. The intercept is not significant, but that’s not important here the key message is the strength of the slope.
+
+- The residuals look reasonably balanced, with no major issues or extreme outliers, which supports the reliability of the model. Overall, the results make it clear that browsing time is a powerful predictor of spending: customers who browse longer tend to spend noticeably more.
+
+## Interpretation
+
+- The analysis shows a strong and statistically significant positive relationship between BrowsingTime and Spend. The correlation coefficient of 0.85 indicates a very close linear association, and the regression slope shows that each additional minute of browsing is linked with an increase of about £3.44 in spending. The model explains around 73% of the variation in Spend, which is unusually high for a single‑predictor model. The residuals show no major issues, supporting the reliability of the findings.
+
+## Limitations
+
+- The analysis is correlational and does not establish causation.
+
+- Missing values reduce the sample size slightly.
+
+- BrowsingTime may be influenced by unmeasured factors (e.g., product complexity, customer indecision).
+
+- The dataset represents a single time period and may not generalise to all customer groups.
+
+## Conclusion
+
+- There is strong evidence that customers who browse longer tend to spend more. BrowsingTime is a powerful predictor of Spend, and the relationship is both statistically significant and practically meaningful. This insight suggests that strategies aimed at increasing customer engagement—such as improved navigation, personalised recommendations, or richer product pages—may help increase overall spending.
+
+## Final Interpretation:
+
+- Taken together, the correlation and regression results point to the same clear conclusion. Browsing time is strongly and consistently linked with how much customers spend, and the effect is large enough to matter in practice. Customers who browse longer almost always end up spending more, and this pattern holds across the entire dataset. Overall, the evidence shows a reliable and meaningful relationship between browsing behaviour and spending.
+
+# End matter - Session Information
+
+Do not edit this part. Make sure that you compile your document so that the information about your session (including software / package versions) is included in your submission.
+
+```{r}
+sessionInfo()
+```

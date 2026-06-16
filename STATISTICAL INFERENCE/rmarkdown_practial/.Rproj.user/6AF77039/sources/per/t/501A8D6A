@@ -1,0 +1,28 @@
+{
+    "id": "501A8D6A",
+    "path": "~/DATA SCIENCE/STATISTICAL INFERENCE/rmarkdown_practial/rmd/ebola_anaayl.Rmd",
+    "project_path": "rmd/ebola_anaayl.Rmd",
+    "type": "r_markdown",
+    "hash": "2932442032",
+    "contents": "",
+    "dirty": false,
+    "created": 1775732343167.0,
+    "source_on_save": false,
+    "relative_order": 3,
+    "properties": {
+        "tempName": "Untitled1",
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "57,0",
+        "scrollLine": "46",
+        "last_setup_crc32": "8987eeb5f3bb6c5b"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1775850634,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1775850634910,
+    "read_only": false,
+    "read_only_alternatives": []
+}

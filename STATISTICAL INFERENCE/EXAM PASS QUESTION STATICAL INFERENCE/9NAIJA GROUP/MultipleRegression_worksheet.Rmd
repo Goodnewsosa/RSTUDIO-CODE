@@ -1,0 +1,218 @@
+---
+title: "Worksheet on multiple regression"
+author: "Andrew Smith"
+date: "`r Sys.Date()`"
+output:
+  word_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(ggplot2)
+```
+
+
+# Multiple regression models
+
+* We will use the 'mtcars' dataset that we saw when we studied simple linear regression. It is a built-in dataset in R: there is no need to load it.
+
+- Dependent variable is 'mpg'
+- Independent variables are drawn from all other variables in the dataset
+
+
+## Reminder of simple linear regression model
+
+In the last exercise of the simple linear regression worksheet, we looked for plots and linear correlations within the continuous variables of mtcars:
+
+```{r}
+df <- mtcars %>%                             # make data frame containing only variables we know to be continuous
+  dplyr::select(-c(am, vs, cyl, gear, carb)) # need to use dplyr::select to distinguish from the function called 'select' in the MASS package
+
+plot(df) # plot the continuous variables against each other
+
+corrs <- cor(df) # calculate correlation coefficients
+
+library(corrplot)
+corrplot(corrs, method="number")
+
+```
+
+We found that `wt` had the strongest correlation with `mpg`, and fitted a simple linear regression model:
+
+```{r}
+model_1 <- lm(mpg ~ wt, data=mtcars)
+summary(model_1)
+```
+
+* Notice R-squared = 0.7528. Means this model explains XX% of variation in mpg 
+* Notice p-value for whole model (1.294e-10) equals the p-value for the coefficient of wt
+
+```{r}
+library(performance)
+check_model(model_1)
+```
+
+
+## Model with two independent variables
+
+Now try a model with two independent variables. Let's regress `mpg` on `wt` and `hp`
+
+```{r}
+model_2 <- lm(mpg ~ wt + hp, data=mtcars)
+summary(model_2)
+```
+
+* Notice R-squared has gone up. This model with two independent variables explains XX% of variation in mpg
+* Now we have a p-value for each coefficient, and they do not correspond to the p-value for the whole model (9.109e-12)
+
+```{r}
+check_model(model_2)
+```
+
+
+## Full model
+What if we put in the full amount of independent variables?
+
+* We would expect to be able to explain a large amount of variation in `mpg`, so why not put in all the independent variables we can!?
+* If using all independent variables, would want to make sure we remove rows with NA values.
+
+```{r}
+mtcars <- na.omit(mtcars) # removes rows with NA values, if there are any
+
+model_full <- lm(mpg ~ ., data=mtcars)
+summary(model_full)
+```
+
+* All the independent variables together explain XX% of variation in mpg
+* The p-value for the whole model is significant (3.793e-07) but none of the coefficients are significant!
+
+```{r}
+check_model(model_full)
+```
+
+There is a problem with multicollinearity!
+
+* Multicollinearity is caused by correlation between the independent variables.
+* We should be careful to check the correlation between the independent (predictor) variables.
+
+
+# Dewis exercise on multiple regression
+
+```{r dewis_multiple_regression}
+
+### Use this code chunk for your code for the multiple regression Dewis exercise
+
+
+dm <- read.csv("../data/contents12.csv")
+
+```
+
+```{r model mr}
+model_2 <- lm(Y ~ X1 + X2, data=dm)
+summary(model_2)
+
+``` 
+
+# Akaike Information Criterion (AIC)
+
+* We need to remove some independent variables from the full model
+* Too many independent variables, and we get multicollinearity problems.
+* Too many independent variables, we risk including an independent variable that makes no contribution to the model.
+* Need a balance between 
+  + Having enough independent variables to predict a decent proportion of variation in the dependent variable
+  + Not having too many independent variables; not including independent variables that make no contribution.
+* One way of achieving this balance is to __minimise the AIC__
+  + Find out more about AIC in the help file `?extractAIC`
+
+## Null model
+
+Out of interest, fit a model with no independent variables
+
+```{r}
+model_null <- lm(mpg ~ 1, data=mtcars)
+summary(model_null)
+mean(mtcars$mpg)
+```
+
+* This model just fits the mean. It explains 0% of the variation in mpg
+
+## Compare AICs
+
+```{r}
+library(MASS)
+extractAIC(model_null)
+extractAIC(model_1)
+extractAIC(model_2)
+extractAIC(model_full)
+```
+
+* It would appear that `model_2`, the model with `wt` and `hp`, is the best balanced model.
+* But is there an even better model with a different number of independent variables?
+* Use stepwise model selection to find the model with smallest AIC.
+
+## Stepwise model selection
+
+```{r}
+# Tell stepAIC to start with the full model, and then save as the final model
+model_final <- stepAIC(model_full)
+summary(model_final)
+```
+
+* Final model explains XX% of variation in mpg
+
+```{r}
+check_model(model_final)
+```
+
+### Question
+What is the interpretation of the final model?
+
+One way to interpret is with a formula:
+
+`mpg` = beta_0 + beta_1 * `wt` + beta_2 * `qsec` + beta_3 * `am`
+
+
+# Advanced [optional]
+# Bootstrap confidence intervals
+
+Bootstrapping may be appropriate here because
+
+* The residuals of the final model may not satisfy all of the assumptions
+* Stepwise model selection can introduce bias to the usual statistical inference
+
+## Find 95% confidence interval for coefficient of wt
+
+```{r}
+# Set up bootstrap
+Nbootstrap<- 1000 # 1000 takes half a minute
+coeff_wt <-rep(NA,Nbootstrap)
+
+# Perform bootstrap
+set.seed(4363)
+for(i in seq_len(Nbootstrap)){
+  usevalues<-sample(seq_along(mtcars$mpg),size=length(mtcars$mpg),replace=TRUE) 
+  bootstrap.sample<- mtcars[usevalues,]
+  model_full <- lm(mpg ~ ., data=bootstrap.sample)
+  model_boot <- stepAIC(model_full, trace=FALSE)
+  coeff_wt[i] <- model_boot$coef["wt"]
+}
+
+# Where the coefficient is NA it means the wt variable wasn't selected
+# Set NA's to 0
+coeff_wt[is.na(coeff_wt)] <- 0
+
+# Histogram
+Bootstrap <- data.frame(Coefficient=coeff_wt)
+ggplot(Bootstrap, aes(x=Coefficient)) +
+geom_histogram(aes(y = ..density..),binwidth = .5)+
+  geom_density()+
+ggtitle("Bootstrapped Coefficients")+
+theme_bw()
+
+# 95% bootstrap confidence interval
+quantile(coeff_wt,c(.025,0.975))
+
+```
+
+

@@ -1,0 +1,150 @@
+---
+title: 'Exam Template: Statistical Inference'
+author: "STUDENT ID"
+date: "`r Sys.Date()`"
+output:
+  word_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+# do not change these options
+knitr::opts_chunk$set(echo = TRUE) # do not edit this line.
+knitr::opts_chunk$set(error = TRUE,comment=NA) # do not edit this line.
+```
+
+# INSTRUCTIONS
+
+Save this template as your studentID.Rmd; you will upload this file as part of your submission. Change the author information on line 3 of this file to your **student ID**. Do not change the authorship to your name.
+
+Your should knit this file to a document **Word** format. The Word document is what will be marked!
+
+**To conform to reproducible research principles you should submit both your .Rmd document and your Word document.**
+
+Any changes that you make to the data (e.g. variable name changes) should be made entirely within R.
+
+The subsections labelled **Answer:** indicate where you should put in your written Answers. The template also provides blank code chunks for you to complete your Answers; you may choose to add additional chunks if required.
+
+This is an individual assessment: do not work with any other person during this exam.
+
+You must submit your assignment before the stated deadline by electronic submission through Blackboard.
+
+- It is a good idea to save your work early and frequently to ensure you have no issues with the submission portal. Multiple submissions can be made to the portal, only the final one will be marked.
+
+- It is your responsibility to submit the exam in a format stipulated above. Your marks may be affected if your tutor cannot open or properly view your submission.
+
+- Do not leave submission to the very last minute. Always allow time in case of technical issues.
+
+- It is essential that you check that you have submitted the correct file(s), and that each complete file was received. Submission receipts are accessed from the Coursework tab.
+
+There is no late submission permitted on this assessment. Ensure that you submit your submission in good time. Neither the module leader nor module team can accept late assessments, do not ask them to do so.
+
+## Use of generative artificial intelligence 
+
+Appropriate use of generative artificial intelligence (AI) is permitted as a tool to assist in learning and assessment, but not to complete the assessment for you. AI responses are typically generic and poorly structured - including material that is not fully relevant to the question and approaches that are not fully justified, thus responses heavily reliant on AI often score poorly. You must demonstrate your own understanding, and that that you can add value as a data professional – this can be through the decision making process, reproducible and transparent research, cohesion of arguments, appropriate context and originality. Use the material we provide on the course, and the statistical methods we suggest on the course. Inclusion of material out of scope and inconsistencies with teaching of the course is often assessed to be poor understanding from over-reliance of AI. Ensure that you are correctly attributing any use of AI in the assessment, failure to do so can lead to referral for assessment offences.
+
+**You should use concepts and techniques introduced within the module delivery.** 
+
+
+# SCENARIO FOR EXAM
+
+## Background to the research
+
+
+LOOK AT EXAM TEMPLATE GIVEN ON EXAM DAY FOR THE SCENARIO AND CONTEXT
+
+## Data instructions
+
+Your individual data set is accessed via Blackboard >>> Assessments >>> Dewis Data For Exam.
+
+You must only analyse the specified data. No other data is to be used for this assessment.
+
+All data manipulation and analyses must be done within R.
+
+## Data structure
+
+LOOK AT EXAM TEMPLATE GIVEN ON EXAM DAY FOR THE DATA STRUCTURE
+
+# QUESTIONS START HERE
+
+## Data Preparation 
+
+1. Ensure that you have prepared your submission as per Instructions.
+
+2. Prepare the data for analyses.
+
+You should explain any decisions with respect to:
+
+-any manipulation of the data structure
+
+-handling of groups with low frequency counts
+
+-unusual or missing values.
+
+Marks will be awarded for logical actions performed, and conforming to principles of reproducible research in data preparation and throughout. Maximum number of words: 500
+
+**(weighting 30%)**
+
+
+### Answer:
+```{r data}
+
+
+```
+
+
+## Core Research Question: Model building
+
+LOOK AT EXAM TEMPLATE GIVEN ON EXAM DAY FOR THE COMPLETE QUESTION
+
+Your answer should include:
+
+-	justification for the attempted statistical model, including any additional supporting exploratory data analyses used to make the choice;
+
+-	interpretation of the model and the validity of model assumptions.
+
+Your answer should be in the form of a concise report, suitable for the client. Maximum number of words: 500
+
+**(weighting 35%)**
+
+### Answer: 
+
+
+
+```{r core}
+
+```
+
+
+
+## Your Research Question: Bivariate analysis
+
+
+Clearly state a **new** research question based on the data set supplied, not answered in your analyses above. You should consider a research question that will **make use of exactly two of the variables** from the available data. 
+
+State and action a statistical analyses plan.
+
+It may be appropriate to include the following: exploratory data analyses; hypothesis testing; interpretation; discussion of limitations.
+
+Your answer should be in the form of a concise report, suitable for the client. 
+
+
+**(weighting 35%)**
+
+### Answer:
+
+
+```{r your}
+
+
+```
+
+
+
+# End matter - Session Information
+
+Do not edit this part. Make sure that you compile your document so that the information about your session (including software / package versions) is included in your submission.
+
+```{r}
+sessionInfo()
+```

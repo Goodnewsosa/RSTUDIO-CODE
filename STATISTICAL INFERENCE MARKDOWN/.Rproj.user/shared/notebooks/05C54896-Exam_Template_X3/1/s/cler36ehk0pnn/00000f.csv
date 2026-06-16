@@ -1,0 +1,3 @@
+"0","# load and read the csv data file"
+"0","contents <- read.csv(""../data/contents.csv"")"
+"0",""

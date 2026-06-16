@@ -1,0 +1,6 @@
+"0","#Converting character variables to factors"
+"0",""
+"0","contents$online     <- as.factor(contents$online)"
+"0","contents$recommend  <- as.factor(contents$recommend)"
+"0","contents$gender     <- as.factor(contents$gender)"
+"0",""

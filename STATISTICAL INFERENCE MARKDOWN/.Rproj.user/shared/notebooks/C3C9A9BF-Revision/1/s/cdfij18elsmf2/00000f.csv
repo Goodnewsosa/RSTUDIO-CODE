@@ -1,0 +1,5 @@
+"0","# convert character variable to factor "
+"0",""
+"0","df_pokemon <- as.factor(pokemon$pokemon)"
+"2","Error: object 'pokemon' not found
+"

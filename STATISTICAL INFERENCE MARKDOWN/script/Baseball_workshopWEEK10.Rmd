@@ -1,0 +1,194 @@
+---
+title: "Baseball Analysis"
+date: "`r Sys.Date()`"
+output:
+  word_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introduction
+
+For the purposes of these analyses, 'salary' will be a key variable of interest, and predicting baseball players salary.
+
+In these exercises you will see some blank code chunks which you can put your code, please feel free to add additional code chunks. Remember to add your interpretation of the output!
+
+# Exercise 1 - The research scenario. 
+
+State the research Question.
+
+Consult the data key
+
+- What variables will you be examining? Why?
+
+#solution
+
+#I will examine salary as the outcome of the prayer, by the use performance statistics on the baseball data key (e.g. hits, HmRuns, Run, League walks), career totals, years in the league, and categorical variables such as league and division as predictors, because these are plausible determinants of salary.
+
+- Can you drop the other variables to make life easier?
+
+# For initial exploration I will retain all variables. For modelling, I will focus on a smaller set of predictors based on correlation, interpretability, and avoiding redundancy (e.g. highly collinear career totals).
+
+- What are your variable types? (categorical data should be treated differently to continuous data).
+
+```{r}
+str(baseball)
+
+```
+
+Provide any data analysis plan.
+
+Load the data
+
+```{r}
+baseball<-read.csv("../data/baseball.csv",sep=",",header=TRUE,row.names = 'Name',stringsAsFactors = TRUE)
+
+```
+
+Here we have told R to load our dataset, with every string treated as if it was a categorical variable  and that the column called 'Name' should be used as a row name, rather than a useful variable.
+
+If it does not work then:
+Follow our recommendations for folder structure and working directory, or modify the code to suit your folder structure
+
+
+Check the dimensions
+```{r}
+dim(baseball)
+```
+
+
+Check the structure
+
+```{r}
+str(baseball)
+```
+
+List out variable names
+
+```{r}
+colnames(baseball)
+```
+
+
+# Exercise 2 - Validity check and some initial explorations
+
+
+
+Check for unusual values, NAs or NULLs!
+
+```{r}
+sum(is.na(baseball))
+sum(is.null(baseball))
+
+```
+
+```{r}
+length(unique(rownames(baseball)))
+```
+State what your variables reveal in relation to any further required data preparation prior to analyses, and implement any changes as necessary.
+
+Summarise the data
+  - use tables and summary statistics + interpret
+  - use appropriate graphs + interpret
+
+```{r}
+summary(baseball)
+
+```
+
+# Exercise 3 - Hypothesis testing
+
+Hypothesis test you might be interested in?
+  - a logical query of interest for example would be if the salary is the same for each of the four divisions, perform a hypothesis test of this
+  - write down the statement of the null/alternative hypotheses being examined. Include output, interpretation and statistical summary
+ 
+Hypothesis test you might be interested in? 
+- correlations between numerical variables?
+  - write down the statement of the null/alternative hypotheses being examined. Include output, interpretation and statistical summary
+
+
+```{r}
+
+
+```
+
+```{r}
+
+```
+
+# Exercise 4 - Construct a simple linear regression to predict salary
+
+  -	explain your decision-making process for building your regression model, including explanation of any supporting preliminary analyses required;
+  - interpret the regression model
+  -	comment on the performance of the model, overall model fit and the validity of model assumptions.
+  
+  
+
+```{r}
+
+```
+
+# Exercise 5 - Construct a multiple linear regression to predict salary
+  - conduct an analysis; deciding on the appropriate number of variables to include; 
+  - interpret the regression model;
+  -	comment on the performance of the model, overall model fit and the validity of model assumptions.
+
+
+```{r}
+
+
+```
+
+# Exercise 6 - Summarise your results in a short report. Are there any limitations of the research?
+
+
+## What we mean by 'write a report'.
+
+A small statistical report should be concise and easy to understand for the client. 
+It should be structured with paragraphs and logical flow. Read through it multiple times to reduce errors of spelling, grammar and too much general chatter.
+The language used should be plain and non-technical, with the emphasis on conveying the key insights and their practical implications. 
+It is essential to consider the client's background and specific needs when preparing the report to ensure it effectively serves its intended purpose.
+Visual aids such as charts, graphs, and infographics can help in presenting complex statistical information in a more accessible format.
+Consider that the client will not have time to consider all of your code and work, so will want the report to provide the summary of what the client needs to know.
+
+
+## You may wish to include the following in a report
+
+-Introduction
+A brief introduction to the purpose and scope of the report.
+Clearly state the research questions or objectives that the analysis aims to address.
+
+-Data Description:
+A section that provides an overview of the data used in the analysis.
+Describe the data source, sample size, and any important characteristics of the dataset.
+
+-Methodology:
+Explanation of the statistical methods and techniques used in the analysis.
+Include information about data preprocessing, any statistical tests, models, or algorithms employed.
+
+-Key Findings:
+Present the main results of the analysis.
+Use clear and concise language, and consider using tables, charts, or graphs to illustrate key findings.
+Highlight any statistically significant findings or patterns.
+
+-Discussion and Interpretation:
+Interpret the findings and explain their implications.
+Provide context and insights based on the analysis.
+Discuss any limitations or potential sources of bias in the analysis.
+
+-Limitations:
+Limitations of the studey design and analyses. 
+Issues with the assumptions and data modelling techniques used.
+What variables are not recorded that may also have been helpful.
+How the research could be improved.
+
+-Conclusion:
+Summarize the main takeaways and emphasize the significance of the analysis.
+Reiterate any key points or findings.
+If further analysis or actions are needed, suggest potential next steps or areas for further investigation.
+
+-References:
+If external sources were used, provide citations in UWE Harvard format.

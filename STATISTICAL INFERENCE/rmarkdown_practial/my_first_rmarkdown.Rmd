@@ -1,0 +1,113 @@
+---
+title: "Untitled"
+author: "Iyenoma Goodnews Osabuohien"
+output: html_document
+
+date: "2026-04-08"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+pacman::p_load(flexable, gt, reactable, tidyverse,
+  inspectdf,
+  plotly,)
+```
+
+#making headings
+
+# R Markdown
+
+## R Markdown
+
+### R Markdown
+
+creating bullets
+
+-   bullet 1
+-   bullet 2
+
+#adding website link
+
+You can visit my website [here](https://jetbrains.com)
+
+#adding image
+
+![This is an image](images/clipboard-1934544978.jpeg){width="449"}
+
+This is an R Markdown document. *Markdown*(itilas) is a simple **formatting**(bold) syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+```{r}
+2+2
+```
+
+#shotcut for code chek is ctrl+alt i
+
+```{r}
+
+```
+
+#how to write inline code
+
+```{r}
+max(women$height)
+```
+
+The maximum women height is r `max(women$height)`
+
+# how to input Tables or print table
+
+```{r}
+
+
+
+
+flextable::flextable(women)
+gt::gt(women)
+reactable::reactable(women)
+
+
+
+```
+
+#making plots
+
+```{r}
+gglot(women) + geom_point(aes(height, weight))
+```
+
+
+#introduction to piple
+
+```{r}
+pacman::p_load(tidyverse,
+               gt,
+               outbreaks)
+```
+
+
+
+#Earthquakes dataset
+quakes
+
+#Task:show the top 5 earthquakes (magnitude)
+
+#OPT 1: clear, but long
+
+
+```{r}
+
+arranged_data <- arrange(quakes, -mag)
+head(arrange(quakes, -mag), n = 5)
+```
+
+
+arranged_data <- arrange(quakes, -ma
+
+
+```{r}
+women
+
+select(height)
+```
+
+

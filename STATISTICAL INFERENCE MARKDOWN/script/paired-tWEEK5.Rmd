@@ -1,0 +1,122 @@
+---
+title: "paired-t"
+author: "Iyenoma Goodnews Osabuohien"
+date: "2026-02-24"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+
+
+# Read in the data
+```{r}
+tennis <- read.csv("../data/contents.csv")
+
+```
+# Replace the numbers with your actual bounce heights
+dry <- c(1.25, 1.30, 1.18, 1.22, 1.27, 1.19, 1.24, 1.21, 1.29, 1.20)
+wet <- c(1.10, 1.15, 1.05, 1.08, 1.12, 1.03, 1.09, 1.07, 1.13, 1.04)
+
+
+```{r}
+tennis$Dry
+tennis$Wet
+
+```
+
+```{r}
+summary(tennis)
+
+mean(tennis$dry)
+mean(tennis$wet)
+
+```
+
+
+# Compute differences
+```{r}
+diff <- tennis$dry - tennis$wet
+
+```
+
+```{r}
+diff
+str(diff)
+summary(diff)
+```
+```{r}
+str(tennis)
+```
+```{r}
+
+```
+
+# Histogram of differences
+
+```{r}
+hist(diff,
+     main = "Histogram of differences (Dry - wet)",
+     xlab = "Difference in bounce height (m)")
+
+```
+
+```{r}
+t_test_result <- t.test(tennis$dry,
+                        tennis$wet,
+                        paired = TRUE,
+                        alternative = "two.sided",
+                        conf.level = 0.95)
+
+t_test_result
+
+```
+```{r}
+t_test_result$statistic   # t value
+t_test_result$parameter   # degrees of freedom
+t_test_result$p.value     # p-value
+t_test_result$conf.int    # 95% confidence interval for mean difference
+t_test_result$estimate    # mean of the differences (dry - wet)
+
+```
+
+```{r}
+mean_dry <- mean(tennis$dry)
+mean_wet <- mean(tennis$wet)
+mean_dry
+mean_wet
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+## R Markdown
+
+
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

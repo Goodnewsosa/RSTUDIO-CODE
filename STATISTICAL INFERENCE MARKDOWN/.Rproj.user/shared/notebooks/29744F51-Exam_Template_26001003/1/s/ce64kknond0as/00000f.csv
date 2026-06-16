@@ -1,0 +1,5 @@
+"0","# Mosaic plot."
+"0","mosaicplot(table(contents$gender, contents$recommend),"
+"0","           main = ""Gender vs Recommend"","
+"0","           xlab = ""Gender"", ylab = ""Recommend"")"
+"0",""

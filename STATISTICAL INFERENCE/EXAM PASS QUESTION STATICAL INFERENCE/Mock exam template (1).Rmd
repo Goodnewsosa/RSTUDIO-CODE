@@ -1,0 +1,235 @@
+---
+title: 'Mock Exam Template: Statistical Inference'
+author: "STUDENT ID"
+date: 'Mock Exam day'
+output:
+  word_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+# do not change these options
+knitr::opts_chunk$set(echo = TRUE) # do not edit this line.
+knitr::opts_chunk$set(error = TRUE,comment=NA) # do not edit this line.
+```
+
+# Instructions to students
+
+Save this template as your studentID.Rmd; you will upload this file as part of your submission. Change the information on line 3 of this file changing the author information to your **student ID**. Do not change the authorship to your name.
+
+Your should knit this file to a document **Word** format. The Word document is what will be marked!
+
+Any changes that you make to the data (e.g. variable name changes) should be made entirely within R.
+
+The subsubsections labelled **Answer:** indicate where you should put in your written Answers. The template also provides blank code chunks for you to complete your Answers; you may choose to add additional chunks if required.
+
+This is an individual assessment: do not work with any other person during this exam. Text-matching software will be used on all submissions. 
+
+# Instructions for submission 
+You must submit your assignment before the stated deadline by electronic submission through Blackboard.
+
+- It is a good idea to save your work early and frequently to ensure you have no issues with the submission portal. Multiple submissions can be made to the portal, but only the final one will be accepted.
+
+- It is your responsibility to submit the exam in a format stipulated aboveYour marks may be affected if your tutor cannot open or properly view your submission.
+
+- Do not leave submission to the very last minute. Always allow time in case of technical issues.
+
+- The date and time of your submission is taken from the Blackboard server and is recorded when your submission is complete, not when you click Submit.
+
+- It is essential that you check that you have submitted the correct file(s), and that each complete file was received. Submission receipts are accessed from the Coursework tab.
+
+There is no late submission permitted on this timed assessment. Ensure that you submit your submission in good time. Neither the module leader nor module team can accept late assessments, do not ask them to do so.
+
+
+
+# Background to the research
+
+See Dewis
+
+# Data instructrions
+
+Your individual data set is accessed via Blackboard >>> Assessments >>> Dewis Data For Exam.
+
+You must only analyse the specified data. No other data is to be used for this assessment.
+
+All data manipulation and analyses must be done within R.
+
+# Data structure
+
+See Dewis
+
+
+
+```{r libraries, include=FALSE}
+# load any required libraries / additional files here
+library(ggplot2)
+library(dplyr)
+library(performance)
+```
+
+```{r data}
+# load dataset here
+load_file = read.csv("contents (2).csv")
+head(load_file)
+```
+
+# QUESTIONS START HERE
+
+# Question 1: File & Data Preparation 
+
+Ensure you have prepared your submission file as per **Instructions to Students**.
+
+Implement the required data preparation.
+
+-	Create a new variable for length of service taking into account LOS years and LOS months. 
+
+-	For the Likert questions Q1-Q5 a ‘communication score’ is calculated by taking the average response across each of the five questions.
+
+-	For the Likert questions Q6-Q10 a ‘training score’ is calculated by taking the average response across each of the five questions. 
+
+-	For the Likert questions Q11-Q15 a ‘working score’ is calculated by taking the average response across each of the five questions.
+
+-	LOS years, LOS months, and Q1-Q15 could then be considered redundant variables.
+
+
+**(10 marks)**
+
+### Answer:
+
+
+
+```{r Q1}
+communication_score = rowMeans(load_file[, c("Q1", "Q2", "Q3", "Q4", "Q5")], na.rm = TRUE)
+head(communication_score)
+
+training_score = rowMeans(load_file[,c("Q6", "Q7", "Q8", "Q9", "Q10")], na.rm = TRUE)
+head(training_score)
+
+working_score = rowMeans(load_file[,c("Q11", "Q12", "Q13", "Q14", "Q15")], na.rm = TRUE)
+head(training_score)
+
+```
+
+# Question 2 
+
+By producing relevant descriptive statistics for ‘age’, ‘hours’, and ‘gender’ or otherwise, state what these variables reveal in relation to any further required data preparation prior to analyses, and implement any changes as necessary.
+
+
+**(5 marks)**
+
+### Answer: 
+
+
+
+```{r Q2}
+summary(load_file$age)
+hours_table <- table(load_file$hours)
+hours_table
+gender_table <- table(load_file$gender)
+```
+
+
+
+
+
+
+# Question 3
+
+It is hypothesised that the mean ‘working score’ is 3. Perform an appropriate statistical test of this hypothesis and produce a confidence interval for the mean ‘working score’.
+
+Your answer should include appropriate statistical hypotheses, output, interpretation and statistical summary.
+
+
+**(10 marks)**
+
+### Answer:
+
+
+
+```{r Q3}
+
+t.test(working_score, mu = 3)
+```
+
+
+# Question 4
+
+Produce relevant descriptive statistics and exploratory graphics to inform which employees are likely to ‘leave’. Ensure that each output has appropriate interpretation.
+
+Marks are awarded for well-designed output, and the interpretation of the output.
+
+**(10 marks)**
+
+### Answer:
+
+
+```{r Q4}
+
+
+```
+
+
+
+
+# Question 5:  
+
+Show and interpret relevant linear correlations within this data set, with particular focus on the variable ‘working score’.
+
+Marks are awarded for well-designed output, and the interpretation of the output.
+
+
+
+**(10 marks)**
+
+### Answer:
+
+
+```{r Q5}
+
+
+```
+
+
+# Question 6:  
+
+Create a linear regression to model ‘working score’, and assess the model. Your answer must include a regression model with ‘working score’ as the dependent variable, and an appropriate number of explanatory variables.
+
+Your answer should include:
+
+-	the decision-making process for building your regression model, including explanation of any supporting preliminary analyses required;
+
+-	comment on the performance of the model, overall model fit and the validity of model assumptions.
+
+
+**(25 marks)**
+
+### Answer:
+
+
+```{r Q6}
+
+
+```
+
+
+# Question 7: Report 
+
+Write a short report of 300-500 words to the client outlining your findings, including interpretation of what your regression model reveals about patterns in ‘working score’.
+
+ 
+**(30 marks)**
+
+### Answer:
+
+
+
+
+
+
+# End matter - Session Information
+
+Do not edit this part. Make sure that you compile your document so that the information about your session (including software / package versions) is included in your submission.
+
+```{r}
+sessionInfo()
+```

@@ -1,0 +1,2 @@
+"0","# Boxplots for numeric variables"
+"0","boxplot(contents$age, main = ""Boxplot of Age"", ylab = ""Age"")"

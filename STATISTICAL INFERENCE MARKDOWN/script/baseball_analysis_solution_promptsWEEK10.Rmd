@@ -1,0 +1,237 @@
+---
+title: "Baseball Analysis"
+output:
+  word_document: default
+  html_document: default
+date: "`r Sys.Date()`"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r libraries, include=FALSE}
+if(!require(psych)){
+  install.packages("psych")
+  library(psych)
+}
+if(!require(flextable)){
+  install.packages("flextable")
+  library(flextable)
+}
+
+if(!require(corrplot)){
+  install.packages("corrplot")
+  library(corrplot)
+}
+
+if(!require(ggplot2)){
+  install.packages("ggplot2")
+  library(ggplot2)
+}
+
+if(!require(easystats)){
+  install.packages("easystats")
+  library(easystats)
+}
+
+```
+
+
+# Part 1 - Accessing and Verifying data
+
+Step 1:
+Load the data
+
+```{r}
+
+BaseBall<-read.csv("../data/baseball.csv",sep=",",header=TRUE)
+```
+
+Check the dimensions
+```{r}
+dim(BaseBall)
+```
+
+
+Check the structure
+
+```{r}
+str(BaseBall)
+```
+
+List out variable names
+
+```{r}
+colnames(BaseBall)
+```
+
+
+Have a think! Perhaps we could load the data in a different way where it may be more useful, by changing some options!
+
+
+```{r}
+baseball<-read.csv("../data/baseball.csv",sep=",",header=TRUE,row.names = 'Name',stringsAsFactors = TRUE)
+
+```
+
+```{r}
+str(baseball)
+```
+
+Here we have told R to load our dataset, with every string treated as if it was a categorical variable (not always a good idea!) and that the column called 'Name' should be used as a row name, rather than a useful variable.
+
+
+Which of the two datasets should we use to proceed?
+BaseBall or baseball?
+
+Or should we make further modifications?
+
+```{r}
+rm(BaseBall)
+```
+
+# Part 2 - Some initial explorations
+
+1. Check for NAs or NULLs!
+
+```{r}
+sum(is.na(baseball))
+sum(is.null(baseball))
+
+```
+
+```{r}
+length(unique(rownames(baseball)))
+
+```
+
+
+```{r}
+summary(baseball)
+```
+
+```{r}
+Sal_Div<-describeBy(baseball$Salary,group = baseball$Division,mat=TRUE)
+Sal_Div<-Sal_Div[,c("group1","n","mean","median","sd","min","max")]
+colnames(Sal_Div)[1]<-"division"
+Sal_Div$mean<-signif(Sal_Div$mean ,4)
+flextable(Sal_Div)|>theme_booktabs(x,bold_header = TRUE)
+```
+## Find numeric variables only
+
+```{r}
+baseball_num<-Filter(is.numeric,baseball)
+
+```
+
+```{r}
+X<-describe(baseball_num)
+X$vars<-rownames(X)
+flextable(X[,c("vars","n","mean","median","sd","min","max")])|>theme_booktabs(x,bold_header = TRUE)
+
+```
+
+```{r}
+M<-cor(baseball_num)
+corrplot(M,method="circle",type="lower",diag=FALSE,tl.col = "black",tl.srt = 45)
+```
+
+```{r}
+which.max(abs(M["Salary",-17]))
+
+```
+
+```{r}
+ggplot(data=baseball,aes(x=CRBI,y=Salary,colour=Division,shape=Division))+geom_point()+theme_minimal()
+
+```
+
+# Part 3 - Hypothesis testing
+
+```{r}
+TTest<-t.test(baseball$Salary~baseball$Division,paired=FALSE)
+```
+
+
+```{r}
+report(TTest)
+```
+The Welch Two Sample t-test testing the difference of
+Salary by Division (mean in group E =
+624.27, mean in group W = 450.88) suggests that the
+effect is positive, statistically significant
+(difference = 173.39, 95% CI [64.73, 282.06], t(218)
+= 3.14, p = 0.002.
+
+```{r}
+CTest<-cor.test(baseball$Salary,baseball$CRBI)
+report(CTest)
+```
+
+The Pearson's product-moment correlation between
+Salary and CRBI is positive,
+statistically significant (r = 0.57, 95%
+CI [0.48, 0.64], df=261, p < .001)
+
+# Part 4 - Constructing a simple linear regression
+
+```{r}
+mod1<-lm(Salary~CRBI,data=baseball)
+as_flextable(mod1)
+
+report(mod1)
+```
+
+# Part 5 - Constructing a multiple linear regression
+
+```{r}
+mod_full<-lm(Salary~.,data=baseball)
+summary(mod_full)
+
+```
+
+```{r}
+check_model(mod_full,check=c("vif","ncv"))
+
+```
+
+```{r}
+mod_red<-step(mod_full,verbose=FALSE)
+summary(mod_red)
+```
+
+```{r}
+mod_redB<-step(mod_full,k=log(nrow(baseball)))
+summary(mod_redB)
+```
+
+```{r}
+check_model(mod_redB,check=c("vif","linearity"))
+```
+
+
+# Part 6 - Reporting your results
+
+
+- Is the data relevant / appropriate!
+
+The data analysed was collected in the 1980s (30+ years ago). Therefore the relevance of the variables is questionable and the magnitude of the coefficient estimates do not take factors such as inflation into account.
+
+
+We have many concerns about the final model selected.  There are still variables included that result in high multicollinearity; this means that our independent variables are not independent of one another. It causes problems with interpretation (cannot assume other variables remain constant); it can also cause problems with the numerical stability of algorithms which in term can affect model estimates of coefficients, standard errors of coefficients and hence associated p-values. 
+Therefore we cannot be certain about claims that particular variables may or may not be statistically significant.
+
+We also observe that our residuals are not constant. This indicates that we may need to apply a transformation to the data in order to ensure that assumptions of a linear model become appropriate (residuals are normally distributed with a mean of zero and a constant standard deviation; the residuals should also be independent of one another)
+
+- Do we have concerns about the final model
+  - in terms of model assumptions
+  - in terms of interpretability
+
+Key findings: what variables are important
+what variables aren't important!
+
+
+
+
+

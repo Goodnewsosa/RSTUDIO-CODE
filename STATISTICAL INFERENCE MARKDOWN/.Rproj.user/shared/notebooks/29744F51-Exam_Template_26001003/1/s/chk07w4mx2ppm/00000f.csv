@@ -1,0 +1,5 @@
+"0",""
+"0","  ggplot(contents, aes(x = Spend)) +"
+"0","  geom_histogram(bins = 20, fill = ""green"", color = ""darkgreen"", na.rm = TRUE) +"
+"0","  labs(title = ""Histogram of Spend"", x = ""Spend"", y = ""Frequency"") +"
+"0","  theme_minimal()"

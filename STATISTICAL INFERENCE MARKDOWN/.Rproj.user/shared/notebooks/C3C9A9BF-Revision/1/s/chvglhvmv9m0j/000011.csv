@@ -1,0 +1,4 @@
+"0",""
+"0","# visualise the spread of pokemon"
+"0","hist(pokemon$hp)"
+"0",""

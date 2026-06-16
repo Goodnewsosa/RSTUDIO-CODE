@@ -1,0 +1,242 @@
+---
+title: "Week 4"
+author: "Ben Derrick"
+date: "2023-02-21"
+output:
+  word_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Note: this worksheet uses the 'iris' dataset that exists within R. Only basic statistics and graphics are given in this worksheet to keep the focus on the hypothesis tests. 
+
+
+Research Question 1. Is the population Sepal Width 3cm?
+---------------------------------------------------------------
+
+First, we write the null hypothesis formally.
+$H_0: \mu = 3$
+
+
+### EDA
+
+I can get a quick summary of this variable (five number summary, mean as well as count of NA values):
+
+```{r systolic_summary, echo=FALSE}
+summary(iris$Sepal.Width)
+
+```
+
+One other key piece of EDA will be a histogram.
+
+```{r hist_systolic, echo=FALSE}
+hist(iris$Sepal.Width)
+```
+
+What does the EDA tell us about the truth (or otherwise) of the null hypothesis?
+
+
+## A text book hypothesis test
+
+The textbook hypothesis test in this case would be the "one-sample t-test".
+
+
+### Assumptions
+- no gross outliers
+- observations independent
+- sample large enough that $\bar{x}$ could be Normally distributed
+
+
+### The test
+
+```{r one_sample_t, echo=TRUE}
+t.test(iris$Sepal.Width, mu = 3, alternative = "two.sided")
+```
+
+
+### The conclusion
+
+What is the statistical conclusion to this hypothesis test?
+(Remember this will be a statement about the null hypothesis.)
+
+Application of the one sample t-test indicates that there is no evidence to suggest that the mean sepal width of the iris dlowers in not equal to 3 (p=0.1093)
+
+=== A claim that the mean sepal width is equal to 3 is reasonable.
+
+No violation of the assumptions apparent, histogram shows a pproximate normal distribution and no extreme outliers.
+
+### The interpretation
+
+1. Are the assumptions met (look at the histogram and the NA count)?
+2. If we reject the null hypothesis, is the difference practically important?
+
+
+
+
+
+Research Question 2. Do setosa have the same Sepal Widths as versicolor?
+-----------------------------------------------------------------------------
+
+Firstly we will filter so that only setos and versicolor species are included.
+
+
+```{r means_by_sex}
+Filtered_iris = subset (iris, Species == "setosa" | Species =="versicolor")
+```
+
+
+The null hypothesis in this case can be written down.
+
+$H_0: \mu_S = \mu_V$
+
+where $\mu_S$ denotes the Population mean value for setos, and $\mu_V$ denotes the Population mean value for versicolor.
+
+
+### EDA
+
+We can obtain group means
+
+```{r means}
+summary(Filtered_iris$Sepal.Width[iris$Species=="versicolor"])
+summary(Filtered_iris$Sepal.Width[iris$Species=="setosa"])
+```
+
+
+
+And the most important visual will be a boxplot (or a faceted histogram).
+
+```{r boxplot_Species}
+boxplot(Filtered_iris$Sepal.Width ~ Filtered_iris$Species)
+```
+
+What does the EDA tell us about the truth (or otherwise) of the null hypothesis?
+
+
+## Another text book hypothesis test
+
+In this case we might use a two-sample t-test (independent samples).
+
+
+### Assumptions
+
+- no gross outliers, 
+- observations independent, 
+- sample large enough that $\bar{x_M}$ and $\bar{x_F}$ could be Normally distributed, 
+- both groups have the same variance
+
+
+### The test
+
+```{r two_sample_t, echo=TRUE}
+t.test(Filtered_iris$Sepal.Width ~ Filtered_iris$Species, var.equal=TRUE)
+```
+
+
+### The conclusion
+
+What is the statistical conclusion to this hypothesis test?
+(Remember this will be a statement about the null hypothesis.)
+
+
+### The interpretation
+
+1. Are the assumptions met (look at the histogram and the NA count)?
+2. If we reject the null hypothesis, is the difference practically important?
+
+
+
+Research Question 3. Is there a correlation between Sepal Length and Sepal Width?
+-----------------------------------------------------------------------------
+
+Note this one carefully, the null hypothesis is that the Population correlation coefficient is zero:
+
+$H_0: \rho = 0$
+
+
+### EDA
+
+
+
+```{r scatter}
+plot(iris$Sepal.Length,iris$Sepal.Width)
+
+```
+
+```{r correlation}
+with(iris, cor(Sepal.Length, Sepal.Width, use="pairwise.complete.obs"))
+```
+
+
+
+
+## Hypothesis test
+
+A hypothesis test assumes that Pearson's product moment correlation coefficient follows a t distribution with $n-2$ degrees of freedom if the samples follow independent normal distributions.  What other EDA might we need to check these assumptions?
+
+### The test
+
+```{r correlation_test}
+with(iris, cor.test(Sepal.Length, Sepal.Width, use="pairwise.complete.obs"))
+```
+
+### The conclusion
+
+What is the statistical conclusion to this hypothesis test?
+(Remember this will be a statement about the null hypothesis.)
+
+
+### The interpretation
+
+1. Are the assumptions met - do you need some more EDA to check this
+2. If we reject the null hypothesis, does this tell us that the correlation is practically important?
+
+
+
+
+## Advanced activity using iris
+
+Research Question 4. Do the three Species differ on Sepal Width
+----------------------------------------------------------------------------------------------
+
+This is an extension of the comparison of means we did for two Species, only now we have more than 2 groups and must use a different test. The null hypothesis:
+
+$H_0: \mu_S = \mu_V = \mu_Vi$
+
+(where S denotes setosa, V denotes versicolor,  Vi denotes virginoca)
+
+
+### EDA
+
+
+
+```{r boxplot_3}
+boxplot(iris$Sepal.Width ~iris$Species)
+
+```
+
+
+## Hypothesis test
+
+Because we are comparing more than one population mean, first of all we conduct a so-called "Analysis of variance" (ANOVA) against the null hypothesis that all means are the same.  
+
+
+### Assumptions
+
+1. There are no gross outliers, 
+2. the observations are independent, 
+3. the variance is the same in each group and 
+4. the group means are Normally distributed
+
+
+### The test
+
+We can perform a classical ANOVA using the `aov()` command in R. The `print()` and `summary()` methods give slightly different information on the ANOVA object you create.
+
+```{r econact_aov}
+test3 <- aov(Sepal.Width ~ Species, iris)
+print(test3)
+summary(test3)
+```

@@ -1,0 +1,157 @@
+---
+title: "Simple linear regression"
+author: "Name"
+date: "Date"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(performance)
+library(dplyr)
+library(corrplot)
+```
+
+# A simple linear regression using the cars dataset
+
+'cars' is a built-in dataset in R: there is no need to load it.
+
+## Summary statistics
+
+```{r}
+summary(cars)
+```
+
+
+## Scatter plot
+
+Plot stopping distance (dist) against speed.
+
+```{r}
+
+library(ggplot2)
+ggplot(cars, aes(x=speed, y=dist)) +
+  geom_point() # + geom_smooth(method="lm")
+
+# What does adding geom_smooth do?
+```
+
+What does this tell you?
+
+Does this seem to be a good candidate for a simple linear regression?
+
+
+## Correlation
+
+Perform a linear correlation between these two variables.  Is the linear correlation statistically significant?
+
+```{r}
+
+with(cars, cor(speed,dist))
+with(cars, cor.test(speed,dist))
+
+```
+
+
+## Linear regression
+
+Model the stopping distance of these cars (from the 1920s). You will need to identify your dependent and independent variables.
+
+```{r}
+
+model1 <- lm(dist ~ speed, data=cars)
+summary(model1)
+
+```
+
+Interpret the output of the model.
+
+How would you explain the regression equation to someone?
+
+
+$$\mbox{distance} = \beta_0 + \beta_1 \times \mbox{speed}$$
+
+An increase of 1mph in speed leads to an average increase of beta_1 feet in distance.
+
+How would you explain the R-squared value to someone?
+
+The R-squared value tells us that XX% of the variation in distance can be explained by variation in speed and the fitted linear model.
+
+
+## Model fit
+
+Assess the performance of the model.
+
+Does it show evidence of breaking model assumptions?
+
+```{r}
+
+library(performance)
+check_model(model1)
+
+```
+
+
+
+
+
+# Dewis exercise 'r regression'
+
+Use the code chunk below to contain your code to answer the Dewis question 
+
+```{r Dewis}
+
+# Start your code here
+
+
+```
+
+
+# The mtcars dataset
+
+'mtcars' is a built-in dataset in R: there is no need to load it.
+
+```{r}
+
+library(dplyr)
+df <- mtcars %>%
+select(-c(am, vs, cyl, gear, carb))
+glimpse(df)
+
+```
+
+Pick which variable is the best single variable for explaining the variation in miles per gallon (mpg), using a simple linear regression model.
+
+Fully document your process, including your exploratory data analysis, model evaluation and selection.
+
+How would you explain your chosen model to someone without technical expertise?
+
+```{r}
+
+## Summary statistics
+
+## Correlation
+### Hint: choose the variable that has the largest absolute correlation with miles per gallon
+
+## Scatter plot
+
+## Linear regression
+
+## Interpretation
+
+## Model fit
+
+```
+
+
+
+
+
+R packages mentioned today that you may find useful include:
+
+- corrplot (for visualisation of correlations across a set of variables) <https://cran.r-project.org/web/packages/corrplot/vignettes/corrplot-intro.html>
+
+- performance (for model evaluation and comparison) <https://easystats.github.io/see/articles/performance.html>
+
+

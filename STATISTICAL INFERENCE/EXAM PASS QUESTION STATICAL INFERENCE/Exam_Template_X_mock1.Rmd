@@ -1,0 +1,235 @@
+---
+title: 'Exam Template: Statistical Inference'
+author: "STUDENT ID"
+date: "`r Sys.Date()`"
+output:
+  word_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+# do not change these options
+knitr::opts_chunk$set(echo = TRUE) # do not edit this line.
+knitr::opts_chunk$set(error = TRUE,comment=NA) # do not edit this line.
+```
+
+# INSTRUCTIONS
+
+Save this template as your studentID.Rmd; you will upload this file as part of your submission. Change the author information on line 3 of this file to your **student ID**. Do not change the authorship to your name.
+
+Your should knit this file to a document **Word** format. The Word document is what will be marked! 
+
+**To conform to reproducible research principles you should submit both your .Rmd document and your Word document.**
+
+Any changes that you make to the data (e.g. variable name changes) should be made entirely within R.
+
+The subsections labelled **Answer:** indicate where you should put in your written Answers. The template also provides blank code chunks for you to complete your Answers; you may choose to add additional chunks if required.
+
+This is an individual assessment: do not work with any other person during this exam.
+
+You must submit your assignment before the stated deadline by electronic submission through Blackboard.
+
+- It is a good idea to save your work early and frequently to ensure you have no issues with the submission portal. Multiple submissions can be made to the portal, only the final one will be marked.
+
+- It is your responsibility to submit the exam in a format stipulated above. Your marks may be affected if your tutor cannot open or properly view your submission.
+
+- Do not leave submission to the very last minute. Always allow time in case of technical issues.
+
+- It is essential that you check that you have submitted the correct file(s), and that each complete file was received. Submission receipts are accessed from the Coursework tab.
+
+There is no late submission permitted on this assessment. Ensure that you submit your submission in good time. Neither the module leader nor module team can accept late assessments, do not ask them to do so.
+
+## Use of generative artificial intelligence 
+
+Appropriate use of generative artificial intelligence (AI) is permitted as a tool to assist in learning and assessment, but not to complete the assessment for you. AI responses are typically generic and poorly structured - including material that is not fully relevant to the question and approaches that are not fully justified, thus responses heavily reliant on AI often score poorly. You must demonstrate your own understanding, and that that you can add value as a data professional – this can be through the decision making process, reproducible and transparent research, cohesion of arguments, appropriate context and originality. Use the material we provide on the course, and the statistical methods we suggest on the course. Inclusion of material out of scope and inconsistencies with teaching of the course is often assessed to be poor understanding from over-reliance of AI. Ensure that you are correctly attributing any use of AI in the assessment, failure to do so can lead to referral for assessment offences.
+
+**You should use concepts and techniques introduced within the module delivery.** 
+
+
+# SCENARIO FOR EXAM
+
+## Background to the research
+
+The client is a Pokemon enthusiast, who  has little statistics knowledge! 
+
+## Data instructrions
+
+Upload the Pokemon dataset.
+
+The data is taken from a CRAN package called "pokemon"
+
+## Data structure
+
+This activity was inspired by 'tidytuesday'. See the link for full details:
+
+https://github.com/rfordatascience/tidytuesday/blob/main/data/2025/2025-04-01/readme.md
+
+You can find this and a lot more activities on 'tidytuesday' with hints and tips for analyses too!
+
+
+# QUESTIONS START HERE
+
+## Data Preparation 
+
+1. Ensure that you have prepared your submission as per Instructions.
+
+2. Prepare the data for analyses.
+
+You should explain any decisions with respect to:
+
+-any manipulation of the data structure
+
+-handling of groups with low frequency counts
+
+-unusual or missing values.
+
+Marks will be awarded for logical actions performed, and conforming to principles of reproducible research in data preparation and throughout.
+
+**(weighting 30%)**
+
+
+### Answer:
+```{r data}
+
+x_mock = read.csv("C:/Users/X_mock.csv")
+x_mock
+
+# Checking for null values
+na_per_col <- colSums(is.na(x_mock))
+print(na_per_col)
+
+# Checking for unique values
+unique_vals = unique(x_mock$type_2)
+unique_vals
+
+x_mock$speed
+
+summary(x_mock$speed)
+
+higher_speed = x_mock %>% filter(speed >= 65)
+higher_speed
+
+hist(x_mock$speed)
+boxplot(x_mock$speed)
+
+```
+
+
+## Core Research Question: Model building
+
+In Pokémon games, hp stands for Hit Points or Health Points. It represents how much damage a Pokémon can take before fainting.
+
+Create a linear regression model showing factors that can impact hp.
+
+Your answer should include:
+
+-	justification for the attempted statistical model, including any additional supporting exploratory data analyses used to make the choice;
+
+-	interpretation of the model and the validity of model assumptions.
+
+Your answer should be in the form of a concise report, suitable for the client. Maximum number of words: 500
+
+**(weighting 35%)**
+
+### Answer: 
+
+
+
+```{r core}
+t.test(x_mock$hp)
+
+# Changed all the null value in hit point
+hp_null_fill = x_mock[is.na(x_mock$hp)] <- 65.00
+x_mock$hp
+
+model1 <- lm(hp~speed, data=x_mock)
+summary(model1)
+confint(model1)
+
+model2 <- lm(hp~., data=x_mock)
+summary(model2)
+
+library(performance)
+check_model(model1)
+
+#Checking the correlation between the speed and hit point
+with(x_mock, cor(hp,speed))
+with(x_mock, cor.test(speed,hp))
+
+```
+
+
+
+## Your Research Question: Bivariate analysis
+
+
+Clearly state a **new** research question based on the data set supplied, not answered in your analyses above. You should consider a research question that will **make use of exactly two of the variables** from the available data. 
+
+State and action a statistical analyses plan.
+
+It may be appropriate to include the following: exploratory data analyses; hypothesis testing; interpretation; discussion of limitations.
+
+Your answer should be in the form of a concise report, suitable for the client. Maximum number of words: 500
+
+
+**(weighting 35%)**
+
+### Answer:
+
+
+```{r your}
+# Exploratory analysis for hp
+ggplot(x_mock, aes(x = hp)) +
+  geom_histogram(bins = 30, fill = "steelblue", color = "white") +
+  labs(title = "Distribution of HP Values", x = "HP", y = "Count")
+
+# Scatter plots for potential predictors
+predictor_vars <- c("attack", "defense", "special_attack", "special_defense", 
+                    "speed", "weight", "height", "base_experience")
+
+# Correlation matrix
+cor_matrix <- x_mock %>%
+  select(hp, all_of(predictor_vars)) %>%
+  cor(use = "complete.obs")
+
+cor_matrix["hp", ]
+
+# Model building - initial model with all numeric predictors
+initial_model <- lm(hp ~ attack + defense + special_attack + special_defense + 
+                     speed + weight + height + base_experience, 
+                   data = x_mock)
+summary(initial_model)
+
+# Check model assumptions
+par(mfrow = c(2, 2))
+plot(initial_model)
+par(mfrow = c(1, 1))
+
+# VIF for multicollinearity
+car::vif(initial_model)
+
+# Refined model removing highly correlated predictors
+refined_model <- lm(hp ~ defense + special_defense + weight + type_1, 
+                   data = x_mock)
+summary(refined_model)
+
+# Check refined model assumptions
+par(mfrow = c(2, 2))
+plot(refined_model)
+par(mfrow = c(1, 1))
+
+# Model diagnostics
+shapiro.test(resid(refined_model))
+car::ncvTest(refined_model)
+
+```
+
+
+
+# End matter - Session Information
+
+Do not edit this part. Make sure that you compile your document so that the information about your session (including software / package versions) is included in your submission.
+
+```{r}
+sessionInfo()
+```

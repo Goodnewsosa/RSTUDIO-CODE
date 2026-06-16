@@ -1,0 +1,280 @@
+---
+title: "Metadata and Exploratory Data Analysis"
+author: "Statistical Inference"
+date: "17/03/2026"
+output: word_document
+---
+
+# Preparing this worksheet
+
+### Exercise 1: Install packages
+
+Make sure you have the following packages installed, as they will be used in this worksheet:
+
+- dplyr
+- RSQLite
+- assertr
+
+```{r setup, include=FALSE}
+library(dplyr)
+library(RSQLite)
+library(assertr)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Exercise 2: Check data will load correctly
+
+This worksheet uses the file `hsfe.db`
+
+- You are expected to save the file `hsfe.db` in your `data` subfolder.
+- You are expected to save this worksheet in your `scripts` subfolder.
+- This is best practice for reproducible research in Statistical Inference.
+
+Run the following code chunk to check if you can load the data for this worksheet.
+
+```{r check_folder_structure, echo=FALSE}
+data_location <- "../data/hsfe.db"
+print(paste("My working directory is currently", getwd()))
+print(paste("R is looking for the data in file", normalizePath(data_location)))
+print(paste("R has", c("not")[!file.exists(data_location)] ,"found the data for this worksheet"))
+if(!file.exists(data_location)) stop("R has not found the data for this worksheet") # Stops knitting if data not present
+
+# If it does not work then:
+# Make sure hsfe.db is saved in your data subfolder
+# Make sure this worksheet is saved in your scripts subfolder
+# Make sure your working directory is your scripts subfolder
+# Make sure your knit directory is your scripts subfolder
+```
+
+# Health Survey for England Teaching Dataset
+
+## Metadata about this dataset
+
+The Dublin Core are a set of standards for creating and publishing metadata.
+These standards recommend at least 15 core metadata elements are recorded for a dataset.
+
+### Exercise 3: Record metadata
+
+Complete the 15 Dublin Core metadata elements below for the Health Survey for England Teaching Dataset.
+Some have already been filled in - you may wish to verify them.
+You can find the information you need at https://beta.ukdataservice.ac.uk/datacatalogue/studies/study?id=7402
+
+- Title: (A name given to the dataset)
+- Subject: (The topic of the dataset)
+- Description: A teaching dataset based on the Health Survey for England
+- Creator: (An entity primarily responsible for making the dataset)
+- Publisher: (An entity responsible for making the dataset available)
+- Contributor: None
+- Date: 10 October 2013
+- Type: Dataset
+- Format: .db with 10,617 rows
+- Identifier: https://beta.ukdataservice.ac.uk/datacatalogue/studies/study?id=7402
+- Source: Health Survey for England, 2011
+- Language: English
+- Relation: User guide: https://doc.ukdataservice.ac.uk/doc/7402/mrdoc/pdf/7402hse_2011_teaching_dataset_user_guide.pdf
+- Coverage: (The spatial and temporal topic of the dataset)
+- Rights: Crown copyright. Safeguarded by UK data service (https://ukdataservice.ac.uk/find-data/access-conditions/)
+
+For more about the Dublin Core see http://www.dublincore.org or the preparatory reading at https://guides.library.ucsc.edu/c.php?g=618773
+
+
+### Exercise 4: Find out about variables using metadata   
+
+Find out what the following variable names represent.
+Use the user guide to help you - this is linked in the metadata.
+
+- `Age` 
+- `Sex` 
+- `omsysval` 
+- `porfv` 
+- `econact`
+
+
+## Loading data from a database using RSQLite
+
+The R package `RSQLite` allows us to load data from a `.db` file using SQL comments (seen in other modules).
+
+### Obtaining the names of data tables in the database
+
+A database may contain many tables that contain data.
+Unfortunately the metadata does not tell us which table to use. 
+The following code chunk makes a connection to the database and returns the name of all data tables
+
+```{r}
+library(RSQLite)
+con <- dbConnect(RSQLite::SQLite(), data_location)
+tabs <- dbListTables(con)
+dbDisconnect(con)
+tabs
+```
+
+There is only one table, so we assume that all data is contained within this table. 
+We should make a note of this in our metadata, for future reference.
+
+
+### Load data for this example
+
+We are going to load a data frame containing just those variables listed in the exercise above. 
+The following code chunk makes a connection to the database, runs a query to obtain the variables, then loads them into a data frame.
+
+```{r}
+library(RSQLite)
+con <- dbConnect(RSQLite::SQLite(), data_location)
+res <- dbSendQuery(con, "SELECT Age, Sex, omsysval, porfv, econact
+                   FROM hse2011_teaching")
+hse <- dbFetch(res)
+dbClearResult(res)
+dbDisconnect(con)
+
+str(hse)
+```
+
+### Exercise 5: Loading data using RSQLite
+
+Annotate the code chunk above: write a comment at the end of each line explaining what that line of code does.
+
+
+## Preparing data using metadata and exploratory data analysis
+
+The user guide linked within the metadata tells us that:
+
+- `Age` is numeric and should have no missing values.
+- `Sex` is coded as `1 = Male` and `2 = Female` and should have no missing values.
+- `omsysval` is numeric but may have missing values.
+- `porfv` is numeric but may have missing values.
+- `econact` is coded as `1 = In employment`, `2 = Unemployed`, 3 = `Retired`, `4 = Other` with missing values `-9`, `-8` and `-1`.
+
+We would want to verify this in the data we loaded, as part of our data preparation.
+The following code chunk shows some ways to do this.
+
+```{r}
+str(hse)
+
+# Check `Age` has no missing or unusual values
+summary(hse$Age)
+hist(hse$Age)
+
+# Code `Sex` and check for missing values
+hse$Sex <- factor(hse$Sex, levels=c(1,2), labels=c("Male", "Female"))
+summary(hse$Sex)
+sum(is.na(hse$Sex))
+
+# Check 'omsysval' for missing or unusual values
+summary(hse$omsysval)
+# Blood pressure cannot be negative or zero, so recode these as missing
+hse$omsysval[hse$omsysval <= 0] <- NA
+summary(hse$omsysval)
+hist(hse$omsysval)
+
+# Check `porfv` for missing or unusual values
+summary(hse$porfv)
+# Portions cannot be negative, so recode these as missing
+hse$porfv[hse$porfv < 0] <- NA
+summary(hse$porfv)
+hist(hse$porfv)
+
+# Code `econact`
+hse$econact[hse$econact == -9 | hse$econact == -8 | hse$econact == -1] <- NA
+hse$econact <- factor(hse$econact, levels=c(1,2,3,4), labels=c("Employed","Unemployed","Retired","Other"))
+summary(hse$econact)
+```
+
+## Preparing data using the assertR package
+
+Data in external sources can change.
+A dataset may have previously been prepared (cleaned and checked), but new data may contain new errors or values that will be unexpected later in the analysis pipeline.
+We need to complete the process of cleaning and checking the data every time the dataset is updated.
+If the dataset is updated regularly, we may want to automate this process.
+One way to automatically check and clean updated data is using the assertR package.
+
+```{r}
+hse %>%
+  verify(has_all_names("Age","Sex","omsysval","porfv","econact")) %>%
+  assert(not_na, Age, Sex) %>%
+  verify(Age >= 0) %>%
+  verify(Age <= 120) %>%
+  assert(in_set("Male","Female"), Sex) %>%
+  assert(within_bounds(50,250), omsysval) %>%
+  assert(within_bounds(0,30), porfv) %>%
+  assert(in_set("Employed","Unemployed","Retired","Other"), econact) %>%
+  summary()
+```
+
+### Exercise 6: Cleaning and checking using assertr
+
+Annotate the code chunk above: write a comment at the end of each line explaining what that line of code does.
+
+
+## Example exploratory data analysis
+
+In this example, the research question is 'can we predict systolic blood pressure?'
+
+```{r EDA}
+str(hse)
+
+# Univariate summaries
+boxplot(hse$Age)
+summary(hse$Age)
+
+table(hse$Sex)
+
+boxplot(hse$omsysval)
+summary(hse$omsysval)
+
+boxplot(hse$porfv)
+summary(hse$porfv)
+
+table(hse$econact)
+
+# Comparing with the dependent variable
+plot(hse$Age, hse$omsysval)
+with(hse, cor(Age, omsysval, use="pairwise.complete.obs"))
+
+boxplot(hse$omsysval ~ hse$Sex)
+
+plot(hse$porfv, hse$omsysval)
+with(hse, cor(porfv, omsysval, use="pairwise.complete.obs"))
+
+boxplot(hse$omsysval ~ hse$econact)
+```
+
+### Exercise 7: Interpretation of EDA
+
+(FILL IN XX VALUES, DELETE AS APPROPRIATE)
+
+The univariate summaries tell us:
+
+- The average age in the sample is approximately XX years. We see that 50% of the sample is aged between XX and XX years.
+- The majority of the sample are MALE/FEMALE.
+- Systolic blood pressure has a SYMMETRICAL/POSITIVELY SKEWED/NEGATIVELY SKEWED distribution with more outliers in the POSITIVE/NEGATIVE direction.
+- Portions of fruit has a SYMMETRICAL/POSITIVELY SKEWED/NEGATIVELY SKEWED distribution with more outliers in the POSITIVE/NEGATIVE direction.
+- The modal economic activity in the sample is EMPLOYED/UNEMPLOYED/RETIRED/OTHER.
+
+The comparisons with the dependent variable tell us:
+
+- There is a STRONG/MODERATE/MILD/NO POSITIVE/NEGATIVE correlation between age and systolic blood pressure.
+- Blood pressure tends to be distributed higher in MALES/FEMALES.
+- There is a STRONG/MODERATE/MILD/NO POSITIVE/NEGATIVE correlation between portions of fruit and systolic blood pressure.
+- Blood pressure tends to be distributed higher in the EMPLOYED/UNEMPLOYED/RETIRED/OTHER category of economic activity.
+
+
+### Exercise 7b: (for practice out of class)
+
+Modify the EDA code chunk to improve the appearance of the plots (perhaps using the `ggplot2` package).
+
+
+## Exercise 8: Meta-exercise
+
+Look up the user guide for the Health Survey for England Teaching Dataset, and choose __at least one__ new variable that might be a predictor of systolic blood pressure.
+
+Repeat this worksheet to perform a new analysis including this new variable. 
+You will need to find out metadata for the new variable, including how it is coded.
+You will need to modify the code chunks to:
+
+- Load in this variable as well as the others.
+- Check for missing or unusual values in the new variable, and
+- Label the values for this variable, if necessary.
+- Add in expectations for this variable, using assertr.
+- Incorporate suitable exploratory data analysis designed to answer the research question.
+
+
